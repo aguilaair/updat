@@ -1,6 +1,5 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:thememode_selector/thememode_selector.dart';
 import 'package:updat/updat.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -73,6 +72,13 @@ class _MyHomePageState extends State<MyHomePage> {
         getLatestVersion: () async {
           return "1.0.1";
         },
+        getChangelog: (_, __) async {
+          return "New features: \n- New feature 1\n- New feature 2";
+        },
+        getBinaryUrl: (_) async {
+          return "https://github.com/fluttertools/sidekick/releases/download/1.0.0/sidekick-windows-1.0.0-MS-S.msix";
+        },
+        appName: "Updat Example",
       ),
       body: Container(
         width: double.infinity,
