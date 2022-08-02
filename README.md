@@ -1,12 +1,12 @@
 # Updat - The simple-to-use, flutter-based desktop update package
 
-![Logo](promo/logo.svg)
+![Logo](https://github.com/aguilaair/updat/promo/logo.svg)
 
 Updat is a simple-to-use reliable flutter-native updated that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
 
 ## Demo
 
-![demo](promo/demo.mp4)
+![demo](https://github.com/aguilaair/updat/promo/demo.gif)
 
 ## Installing
 
