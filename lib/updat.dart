@@ -65,14 +65,15 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   @override
   void initState() {
     appVersion = Version.parse(widget.currentVersion);
-
+    updateValues();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // Check for update if we're not checking already and [checkAggresively] is set to `true`.
-    if (widget.checkAggresively && status != UpdatStatus.checking) {
+    if (widget.checkAggresively && status != UpdatStatus.checking ||
+        status == UpdatStatus.idle) {
       updateValues();
     }
 
@@ -86,6 +87,14 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         openDialog: openDialog,
         status: status,
         startUpdate: startUpdate,
+      );
+    }
+
+    if (UpdatStatus.available == status) {
+      return ElevatedButton.icon(
+        onPressed: openDialog,
+        icon: const Icon(Icons.system_update_alt_rounded),
+        label: const Text('Update available'),
       );
     }
 

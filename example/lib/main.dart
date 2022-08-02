@@ -1,6 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:thememode_selector/thememode_selector.dart';
+import 'package:updat/updat.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -17,13 +18,13 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Updat Demo',
             theme: ThemeData(
+              useMaterial3: true,
               primarySwatch: Colors.blue,
               primaryColor: Color(0xff1890ff),
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            darkTheme: ThemeData.dark().copyWith(
-              primaryColor: Colors.blue,
-            ),
+            darkTheme: ThemeData.dark()
+                .copyWith(primaryColor: Colors.blue, useMaterial3: true),
             themeMode: themeMode,
             home: MyHomePage(),
           );
@@ -67,208 +68,174 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Container(
-        height: 55,
-        width: 55,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
-        child: InkWell(
-          customBorder: CircleBorder(),
-          onTap: () {
-            setState(() {
-              show = !show;
-            });
-          },
-          child: Icon(
-            show ? Icons.close : Icons.chat_bubble_rounded,
-            color: color.computeLuminance() < 0.5 ? Colors.white : Colors.black,
-            size: 25,
-          ),
-        ),
+      floatingActionButton: UpdatWidget(
+        currentVersion: "1.0.0",
+        getLatestVersion: () async {
+          return "1.0.1";
+        },
       ),
-      body: Stack(
-        alignment: Alignment.topLeft,
-        children: [
-          Container(
-            width: double.infinity,
-            child: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 50, right: 50),
-                constraints: BoxConstraints(maxWidth: 800),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(left: 50, right: 50),
+            constraints: BoxConstraints(maxWidth: 800),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  "Updat Flutter Demo",
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Wrap(
                   children: [
-                    SizedBox(
-                      height: 50,
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.code_rounded),
+                      onPressed: () {
+                        launch("https://github.com/aguilaair/updat");
+                      },
+                      label: Text("View the code"),
                     ),
-                    Text(
-                      "Updat Flutter Demo",
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Wrap(
-                      children: [
-                        ElevatedButton.icon(
-                          icon: Icon(Icons.code_rounded),
-                          onPressed: () {
-                            launch("https://github.com/aguilaair/updat");
+                    SizedBox(width: 20),
+                    ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.open_in_browser_rounded,
+                        color: Color(0xff1890ff),
+                      ),
+                      onPressed: () {
+                        launch("https://pub.dev/packages/updat");
+                      },
+                      label: Text(
+                        "View the Package",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            return Colors.white; // Use the component's default.
                           },
-                          label: Text("View the code"),
-                        ),
-                        SizedBox(width: 20),
-                        ElevatedButton.icon(
-                          icon: Icon(
-                            Icons.open_in_browser_rounded,
-                            color: Color(0xff1890ff),
-                          ),
-                          onPressed: () {
-                            launch("https://pub.dev/packages/updat");
-                          },
-                          label: Text(
-                            "View the Package",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                return Colors
-                                    .white; // Use the component's default.
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                        "Hello! Try customizing the update widget's display text and colors."),
-                    Divider(
-                      height: 20,
-                    ),
-                    Wrap(
-                      spacing: 40,
-                      runSpacing: 20,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Change the theme:"),
-                            SizedBox(
-                              height: 22,
-                            ),
-                            ThemeModeSelector(
-                                height: 25,
-                                onChanged: (mode) {
-                                  ThemeModeManager.of(context)!.themeMode =
-                                      mode;
-                                }),
-                          ],
-                        ),
-                        /*Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Enable elevation:"),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Switch(
-                              value: elevated,
-                              onChanged: (val) {
-                                setState(() {
-                                  elevated = val;
-                                });
-                              },
-                            )
-                          ],
-                        )*/
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Text("Update the title:"),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 800),
-                      child: TextField(
-                        controller: titleController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter a title',
-                          contentPadding: EdgeInsets.all(10),
-                          isCollapsed: true,
-                          border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.zero),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xff1890ff)),
-                              borderRadius: BorderRadius.zero),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Text("Update the subtitle:"),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 800),
-                      child: TextField(
-                        controller: subtitleController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter a subtitle',
-                          contentPadding: EdgeInsets.all(10),
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                          isCollapsed: true,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xff1890ff)),
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                        "Try changing the color (you can enter any value you want!)"),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ColorPicker(
-                        color: color,
-                        showColorCode: true,
-                        enableShadesSelection: false,
-                        pickersEnabled: {
-                          ColorPickerType.primary: false,
-                          ColorPickerType.accent: false,
-                          ColorPickerType.wheel: true,
-                          ColorPickerType.both: false,
-                          ColorPickerType.bw: false,
-                        },
-                        onColorChanged: (c) {
-                          setState(() {
-                            color = c;
-                          });
-                        }),
                   ],
                 ),
-              ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                    "Hello! Try customizing the update widget's display text and colors."),
+                Divider(
+                  height: 20,
+                ),
+                Wrap(
+                  spacing: 40,
+                  runSpacing: 20,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Change the theme:"),
+                        SizedBox(
+                          height: 22,
+                        ),
+                        Switch(
+                            value: ThemeModeManager.of(context)!._themeMode ==
+                                ThemeMode.dark,
+                            onChanged: (value) {
+                              ThemeModeManager.of(context)!.themeMode =
+                                  value ? ThemeMode.dark : ThemeMode.light;
+                            }),
+                      ],
+                    ),
+                    /*Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Enable elevation:"),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Switch(
+                          value: elevated,
+                          onChanged: (val) {
+                            setState(() {
+                              elevated = val;
+                            });
+                          },
+                        )
+                      ],
+                    )*/
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text("Update the title:"),
+                SizedBox(
+                  height: 15,
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 800),
+                  child: TextField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter a title',
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text("Update the subtitle:"),
+                SizedBox(
+                  height: 15,
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 800),
+                  child: TextField(
+                    controller: subtitleController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter a subtitle',
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Text(
+                    "Try changing the color (you can enter any value you want!)"),
+                SizedBox(
+                  height: 15,
+                ),
+                ColorPicker(
+                    color: color,
+                    showColorCode: true,
+                    enableShadesSelection: false,
+                    pickersEnabled: {
+                      ColorPickerType.primary: false,
+                      ColorPickerType.accent: false,
+                      ColorPickerType.wheel: true,
+                      ColorPickerType.both: false,
+                      ColorPickerType.bw: false,
+                    },
+                    onColorChanged: (c) {
+                      setState(() {
+                        color = c;
+                      });
+                    }),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
