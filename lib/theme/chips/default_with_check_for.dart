@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../updat.dart';
 
-Widget flatChipWithCheckFor({
+Widget defaultChipWithCheckFor({
   required BuildContext context,
   required String? latestVersion,
   required String appVersion,

@@ -53,3 +53,21 @@ That should get you up and running in just a few seconds ⚡️.
 | **`updateDialogBuilder`** | `Widget Function(...)` | Overrides the default update dialog. | N/A       |
 | **`openOnDownload`** | `bool` | Whether Updat should open the installer automatically once it has been downloaded. | `true`      |
 | **`closeOnInstall`** | `bool` | Whether Updat should close the application automatically once it has been downloaded. | `false`      |
+
+### Theming
+
+Updat is extremely easy to theme. We also use `updateChipBuilder` and `updateDialogBuilder` internally to design our widgets, so you have the same customizability we do. We provide a couple of themes to get you started.
+
+To change the theme simply add the desired theme to the builder and you're set.
+
+#### Chips
+
+- `defaultChip` which is an elevatedButton that only shows when an update is available. Shown by default.
+- `defaultChipWithCheckFor` which is an elevatedButton that shows under all condition, allowing to recheck for updates.
+
+- `flatChip` which is an textButton that only shows when an update is available
+- `flatChipWithCheckFor` which is an textButton that shows under all condition, allowing to recheck for updates.
+
+#### Dialogs
+
+- `defualt` which is the default, M2 and M3 dialog that shows by default.
