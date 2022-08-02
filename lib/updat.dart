@@ -18,6 +18,7 @@ class UpdatWidget extends StatefulWidget {
     this.updateChipBuilder,
     this.updateDialogBuilder,
     this.getChangelog,
+    this.callback,
     this.openOnDownload = true,
     this.closeOnInstall = false,
     Key? key,
@@ -34,6 +35,8 @@ class UpdatWidget extends StatefulWidget {
 
   /// Current version of the app. This will be used to compare the latest version. The String must be a semantic version.
   final String currentVersion;
+
+  final void Function(UpdatStatus status)? callback;
 
   /// This Function can be used to override the default chip shown when there is a new version available.
   final Widget Function({
@@ -78,6 +81,7 @@ class UpdatWidget extends StatefulWidget {
 
 class _UpdatWidgetState extends State<UpdatWidget> {
   UpdatStatus status = UpdatStatus.idle;
+  UpdatStatus? lastStatus;
   Version? latestVersion;
   late Version appVersion;
   String? changelog;
@@ -95,6 +99,11 @@ class _UpdatWidgetState extends State<UpdatWidget> {
     // Check for update if we're not checking already and [checkAggresively] is set to `true`.
     if (status == UpdatStatus.idle) {
       updateValues();
+    }
+
+    if (status != lastStatus) {
+      lastStatus = status;
+      widget.callback?.call(status);
     }
 
     // Override default chip

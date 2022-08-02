@@ -1,12 +1,12 @@
 # Updat - The simple-to-use, flutter-based desktop update package
 
-![Logo](https://github.com/aguilaair/updat/promo/logo.svg)
+![Logo](https://github.com/aguilaair/updat/blob/main/promo/logo.svg)
 
-Updat is a simple-to-use reliable flutter-native updated that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
+Updat is a simple-to-use reliable flutter-native updater that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
 
 ## Demo
 
-![demo](https://github.com/aguilaair/updat/promo/demo.gif)
+![demo](https://github.com/aguilaair/updat/blob/main/promo/demo.gif)
 
 ## Installing
 
@@ -47,6 +47,7 @@ That should get you up and running in just a few seconds ⚡️.
 | **`getBinaryUrl`** | `Future<String>` | **Required**. This should provide the link download the binary for a certain app version. Arguments: `latestVersion` | N/A       |
 | **`appNme`** | `String` | **Required**. The Application's name. It is used to name the binaries when downloading. | N/A       |
 | **`getChangelog`** | `Future<String>` | This will render a plain text view of the changelog. | N/A       |
+| **`callback`** | `void Function(UpdatStatus)` | A callback that is called when the UpdatStatus gets updated. | N/A       |
 | **`getDownloadFileLocation`** | `Future<File>` | Choose where to download the update. | N/A       |
 | **`updateChipBuilder`** | `Widget Function(...)` | Overrides the default update chip. | N/A       |
 | **`updateDialogBuilder`** | `Widget Function(...)` | Overrides the default update dialog. | N/A       |

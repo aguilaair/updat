@@ -81,6 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
         getChangelog: (_, __) async {
           return "This is a changelog";
         },
+        callback: (status) {
+          print(status);
+        },
       ),
       body: Container(
         width: double.infinity,
