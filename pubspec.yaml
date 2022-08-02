@@ -1,7 +1,7 @@
 name: updat
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/aguilaair/updat
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
