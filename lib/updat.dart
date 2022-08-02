@@ -42,27 +42,27 @@ class UpdatWidget extends StatefulWidget {
 
   /// This Function can be used to override the default chip shown when there is a new version available.
   final Widget Function({
-    BuildContext context,
-    String? latestVersion,
-    String appVersion,
-    UpdatStatus status,
-    void Function() checkForUpdate,
-    void Function() openDialog,
-    void Function() startUpdate,
-    void Function() launchInstaller,
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required void Function() launchInstaller,
   })? updateChipBuilder;
 
   /// This Function can be used to override the default dialog shown when there is a new version available.
   final Widget Function({
-    BuildContext context,
-    String? latestVersion,
-    UpdatStatus status,
-    String? changelog,
-    String appVersion,
-    void Function() checkForUpdate,
-    void Function() openDialog,
-    void Function() startUpdate,
-    void Function() launchInstaller,
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required String? changelog,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required void Function() launchInstaller,
   })? updateDialogBuilder;
 
   /// Get the url of the binary file to download provided with a certain version.

@@ -1,6 +1,7 @@
-import 'package:flex_color_picker/flex_color_picker.dart';
+//import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:updat/updat.dart';
+import 'package:updat/theme/chips/flat_with_check_for.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
@@ -166,83 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             }),
                       ],
                     ),
-                    /*Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Enable elevation:"),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Switch(
-                          value: elevated,
-                          onChanged: (val) {
-                            setState(() {
-                              elevated = val;
-                            });
-                          },
-                        )
-                      ],
-                    )*/
                   ],
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Text("Update the title:"),
-                SizedBox(
-                  height: 15,
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 800),
-                  child: TextField(
-                    controller: titleController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter a title',
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Text("Update the subtitle:"),
-                SizedBox(
-                  height: 15,
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 800),
-                  child: TextField(
-                    controller: subtitleController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter a subtitle',
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Text(
-                    "Try changing the color (you can enter any value you want!)"),
-                SizedBox(
-                  height: 15,
-                ),
-                ColorPicker(
-                    color: color,
-                    showColorCode: true,
-                    enableShadesSelection: false,
-                    pickersEnabled: {
-                      ColorPickerType.primary: false,
-                      ColorPickerType.accent: false,
-                      ColorPickerType.wheel: true,
-                      ColorPickerType.both: false,
-                      ColorPickerType.bw: false,
-                    },
-                    onColorChanged: (c) {
-                      setState(() {
-                        color = c;
-                      });
-                    }),
               ],
             ),
           ),
