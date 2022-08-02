@@ -1,7 +1,8 @@
 name: updat
-description: A new Flutter package project.
-version: 0.0.1
+version: 1.0.0
 homepage: https://github.com/aguilaair/updat
+description: Updat is a simple-to-use reliable flutter-native updated that handles your application's updates.
+
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
