@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:updat/theme/chips/default.dart';
+import 'package:updat/theme/dialogs/defualt.dart';
 import 'package:updat/utils/file_handler.dart';
 
 /// This widget is the defualt Updat widget, that will only be shown when a new update is detected (This is checked only once per widget initialization by default).
@@ -57,6 +58,7 @@ class UpdatWidget extends StatefulWidget {
     String? latestVersion,
     UpdatStatus status,
     String? changelog,
+    String appVersion,
     void Function() checkForUpdate,
     void Function() openDialog,
     void Function() startUpdate,
@@ -187,58 +189,19 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         openDialog: openDialog,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
+        appVersion: appVersion.toString(),
       );
     } else {
-      showDialog(
+      defaultDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Flex(
-            direction: Theme.of(context).useMaterial3
-                ? Axis.vertical
-                : Axis.horizontal,
-            children: const [
-              Icon(Icons.update),
-              Text('Update available'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('A new version of the app is available.'),
-              const SizedBox(width: 10),
-              Text('New Version: ${latestVersion!.toString()}'),
-              const SizedBox(height: 10),
-              if (status == UpdatStatus.availableWithChangelog) ...[
-                Text(
-                  'Changelog:',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(changelog!),
-                ),
-              ],
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Later'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                startUpdate();
-              },
-              child: const Text('Update Now'),
-            ),
-          ],
-        ),
+        latestVersion: latestVersion?.toString(),
+        status: status,
+        changelog: changelog,
+        checkForUpdate: updateValues,
+        openDialog: openDialog,
+        startUpdate: startUpdate,
+        launchInstaller: launchInstaller,
+        appVersion: appVersion.toString(),
       );
     }
   }
