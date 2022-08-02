@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:updat/utils/file_handler.dart';
-import 'package:updat/utils/open_link.dart';
 
 /// This widget is the defualt Updat widget, that will only be shown when a new update is detected (This is checked only once per widget initialization by default).
 /// If you want a custom widget to be shown, you can pass it as the [updateChipBuilder] parameter.
