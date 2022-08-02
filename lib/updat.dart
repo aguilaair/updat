@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:updat/theme/chips/default.dart';
 import 'package:updat/utils/file_handler.dart';
 
 /// This widget is the defualt Updat widget, that will only be shown when a new update is detected (This is checked only once per widget initialization by default).
@@ -47,6 +48,7 @@ class UpdatWidget extends StatefulWidget {
     void Function() checkForUpdate,
     void Function() openDialog,
     void Function() startUpdate,
+    void Function() launchInstaller,
   })? updateChipBuilder;
 
   /// This Function can be used to override the default dialog shown when there is a new version available.
@@ -58,6 +60,7 @@ class UpdatWidget extends StatefulWidget {
     void Function() checkForUpdate,
     void Function() openDialog,
     void Function() startUpdate,
+    void Function() launchInstaller,
   })? updateDialogBuilder;
 
   /// Get the url of the binary file to download provided with a certain version.
@@ -116,70 +119,20 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         openDialog: openDialog,
         status: status,
         startUpdate: startUpdate,
+        launchInstaller: launchInstaller,
+      );
+    } else {
+      return defaultChip(
+        context: context,
+        latestVersion: latestVersion?.toString(),
+        appVersion: widget.currentVersion,
+        checkForUpdate: updateValues,
+        openDialog: openDialog,
+        status: status,
+        startUpdate: startUpdate,
+        launchInstaller: launchInstaller,
       );
     }
-
-    if (UpdatStatus.available == status ||
-        UpdatStatus.availableWithChangelog == status) {
-      return Tooltip(
-        message: 'Update to version ${latestVersion!.toString()}',
-        child: ElevatedButton.icon(
-          onPressed: openDialog,
-          icon: const Icon(Icons.system_update_alt_rounded),
-          label: const Text('Update available'),
-        ),
-      );
-    }
-
-    if (UpdatStatus.downloading == status) {
-      return Tooltip(
-        message: 'Please Wait...',
-        child: ElevatedButton.icon(
-          onPressed: () {},
-          icon: const SizedBox(
-            width: 15,
-            height: 15,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          ),
-          label: const Text('Downloading...'),
-        ),
-      );
-    }
-
-    if (UpdatStatus.readyToInstall == status) {
-      return Tooltip(
-        message: 'Click to Install',
-        child: ElevatedButton.icon(
-          onPressed: () {
-            try {
-              openInstaller(installerFile!);
-              if (widget.closeOnInstall) exit(0);
-            } catch (e) {
-              setState(() {
-                status = UpdatStatus.error;
-              });
-            }
-          },
-          icon: const Icon(Icons.check_circle),
-          label: const Text('Ready to install'),
-        ),
-      );
-    }
-
-    if (UpdatStatus.error == status) {
-      return Tooltip(
-        message: 'There was an issue with the update. Please try again.',
-        child: ElevatedButton.icon(
-          onPressed: startUpdate,
-          icon: const Icon(Icons.warning),
-          label: const Text('Error. Try Again.'),
-        ),
-      );
-    }
-
-    return Container();
   }
 
   void updateValues() {
@@ -233,6 +186,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         checkForUpdate: updateValues,
         openDialog: openDialog,
         startUpdate: startUpdate,
+        launchInstaller: launchInstaller,
       );
     } else {
       showDialog(
@@ -323,17 +277,19 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         status = UpdatStatus.readyToInstall;
       });
 
-      if (widget.openOnDownload) {
-        // Open the file.
-        try {
-          openInstaller(installerFile!);
-          if (widget.closeOnInstall) exit(0);
-        } catch (e) {
-          setState(() {
-            status = UpdatStatus.error;
-          });
-        }
-      }
+      if (widget.openOnDownload) launchInstaller();
+    }
+  }
+
+  void launchInstaller() {
+    // Open the file.
+    try {
+      openInstaller(installerFile!);
+      if (widget.closeOnInstall) exit(0);
+    } catch (e) {
+      setState(() {
+        status = UpdatStatus.error;
+      });
     }
   }
 }
