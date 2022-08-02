@@ -1,4 +1,8 @@
-## 1.0.0+1
+## 1.1.0
+
+* Add `callback` function to `Updat`
+
+## 1.0.0+2
 
 * Fixes for pub.dev
 
