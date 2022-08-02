@@ -21,6 +21,7 @@ class UpdatWidget extends StatefulWidget {
     this.updateDialogBuilder,
     this.getChangelog,
     this.openOnDownload = true,
+    this.closeOnInstall = false,
     Key? key,
   }) : super(key: key);
 
@@ -69,6 +70,8 @@ class UpdatWidget extends StatefulWidget {
 
   final bool openOnDownload;
 
+  final bool closeOnInstall;
+
   @override
   State<UpdatWidget> createState() => _UpdatWidgetState();
 }
@@ -116,6 +119,54 @@ class _UpdatWidgetState extends State<UpdatWidget> {
           onPressed: openDialog,
           icon: const Icon(Icons.system_update_alt_rounded),
           label: const Text('Update available'),
+        ),
+      );
+    }
+
+    if (UpdatStatus.downloading == status) {
+      return Tooltip(
+        message: 'Please Wait...',
+        child: ElevatedButton.icon(
+          onPressed: () {},
+          icon: const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
+          label: const Text('Downloading...'),
+        ),
+      );
+    }
+
+    if (UpdatStatus.readyToInstall == status) {
+      return Tooltip(
+        message: 'Click to Install',
+        child: ElevatedButton.icon(
+          onPressed: () {
+            try {
+              openInstaller(installerFile!);
+              if (widget.closeOnInstall) exit(0);
+            } catch (e) {
+              setState(() {
+                status = UpdatStatus.error;
+              });
+            }
+          },
+          icon: const Icon(Icons.check_circle),
+          label: const Text('Ready to install'),
+        ),
+      );
+    }
+
+    if (UpdatStatus.error == status) {
+      return Tooltip(
+        message: 'There was an issue with the update. Please try again.',
+        child: ElevatedButton.icon(
+          onPressed: startUpdate,
+          icon: const Icon(Icons.warning),
+          label: const Text('Error. Try Again.'),
         ),
       );
     }
@@ -263,7 +314,14 @@ class _UpdatWidgetState extends State<UpdatWidget> {
 
       if (widget.openOnDownload) {
         // Open the file.
-        await openLink(installerFile!.absolute.path);
+        try {
+          openInstaller(installerFile!);
+          if (widget.closeOnInstall) exit(0);
+        } catch (e) {
+          setState(() {
+            status = UpdatStatus.error;
+          });
+        }
       }
     }
   }

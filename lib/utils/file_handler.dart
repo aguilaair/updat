@@ -38,7 +38,7 @@ Future<File> downloadRelease(File file, String url) async {
   }
 }
 
-Future<void> openInstaller(BuildContext context, File file) async {
+Future<void> openInstaller(File file) async {
   if (file.existsSync()) {
     await openLink("file://${file.absolute.path.replaceAll("\\", "/")}");
   } else {

@@ -72,13 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
         getLatestVersion: () async {
           return "1.0.1";
         },
-        getChangelog: (_, __) async {
-          return "New features: \n- New feature 1\n- New feature 2";
-        },
         getBinaryUrl: (_) async {
           return "https://github.com/fluttertools/sidekick/releases/download/1.0.0/sidekick-windows-1.0.0-MS-S.msix";
         },
         appName: "Updat Example",
+        closeOnInstall: false,
+        openOnDownload: true,
+        getChangelog: (_, __) async {
+          return "This is a changelog";
+        },
       ),
       body: Container(
         width: double.infinity,
