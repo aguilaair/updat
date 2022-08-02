@@ -61,6 +61,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   UpdatStatus status = UpdatStatus.idle;
   Version? latestVersion;
   late Version appVersion;
+  String? changelog;
 
   @override
   void initState() {
@@ -113,6 +114,19 @@ class _UpdatWidgetState extends State<UpdatWidget> {
             setState(() {
               status = UpdatStatus.available;
             });
+            if (widget.getChangelog != null) {
+              widget.getChangelog!(latestVersion, widget.currentVersion)
+                  .then((changelogRec) {
+                if (changelog != null && mounted) {
+                  setState(() {
+                    status = UpdatStatus.availableWithChangelog;
+                    changelog = changelogRec;
+                  });
+                }
+              }).catchError((_) {
+                return;
+              });
+            }
           } else {
             setState(() {
               status = UpdatStatus.upToDate;
@@ -136,6 +150,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
 
 enum UpdatStatus {
   available,
+  availableWithChangelog,
   checking,
   upToDate,
   error,
