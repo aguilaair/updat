@@ -269,7 +269,10 @@ class _UpdatWidgetState extends State<UpdatWidget> {
               },
             ),
             TextButton(
-              onPressed: startUpdate,
+              onPressed: () {
+                Navigator.pop(context);
+                startUpdate();
+              },
               child: const Text('Update Now'),
             ),
           ],
