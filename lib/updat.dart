@@ -16,7 +16,6 @@ class UpdatWidget extends StatefulWidget {
     required this.appName,
     this.getDownloadFileLocation,
     this.updateChipBuilder,
-    this.checkAggresively = false,
     this.updateDialogBuilder,
     this.getChangelog,
     this.openOnDownload = true,
@@ -58,17 +57,19 @@ class UpdatWidget extends StatefulWidget {
     void Function() startUpdate,
   })? updateDialogBuilder;
 
-  /// This bool allows you to specify wether you'd like Updat to check for an update every time the widget is rerendered.
-  final bool checkAggresively;
-
+  /// Get the url of the binary file to download provided with a certain version.
   final Future<String> Function(String? latestVersion) getBinaryUrl;
 
+  /// Override the default download location.
   final Future<File> Function(String? latestVersion)? getDownloadFileLocation;
 
+  /// The name of the app.
   final String appName;
 
+  /// If true, the installer will be opened when the update is downloaded.
   final bool openOnDownload;
 
+  /// If true, the app will be closed when the installer is launched.
   final bool closeOnInstall;
 
   @override
@@ -92,8 +93,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   @override
   Widget build(BuildContext context) {
     // Check for update if we're not checking already and [checkAggresively] is set to `true`.
-    if (widget.checkAggresively && status != UpdatStatus.checking ||
-        status == UpdatStatus.idle) {
+    if (status == UpdatStatus.idle) {
       updateValues();
     }
 
