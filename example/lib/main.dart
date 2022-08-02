@@ -1,7 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:updat/updat.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
   runApp(MyApp());
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ElevatedButton.icon(
                       icon: Icon(Icons.code_rounded),
                       onPressed: () {
-                        launch("https://github.com/aguilaair/updat");
+                        launchUrlString("https://github.com/aguilaair/updat");
                       },
                       label: Text("View the code"),
                     ),
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Color(0xff1890ff),
                       ),
                       onPressed: () {
-                        launch("https://pub.dev/packages/updat");
+                        launchUrlString("https://pub.dev/packages/updat");
                       },
                       label: Text(
                         "View the Package",

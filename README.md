@@ -1,21 +1,20 @@
-![Logo](promo/logo.svg)
-
 # Updat - The simple-to-use, flutter-based desktop update package
 
-Update is a simple-to-use reliable flutter-native updated that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
+![Logo](promo/logo.svg)
 
-# Demo
+Updat is a simple-to-use reliable flutter-native updated that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
+
+## Demo
 
 ![demo](promo/demo.mp4)
 
-
-# Installing
+## Installing
 
 To get started simply type `flutter pub add updat` in your terminal.
 
 🎉 Done, It's that simple.
 
-# Getting Started
+## Getting Started
 
 Integration with your app requires just a few lines of code, add the following widget wherever you want your updat widget to be:
 
@@ -37,9 +36,9 @@ UpdatWidget(
 
 That should get you up and running in just a few seconds ⚡️.
 
-# Configuration 
+## Configuration
 
-### Available `PapercupsWidget` arguments
+### Available `Updat` arguments
 
 | Parameter           | Type      | Value                                                                                                                                    | Default   |
 | :------------------ | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
@@ -53,8 +52,3 @@ That should get you up and running in just a few seconds ⚡️.
 | **`updateDialogBuilder`** | `Widget Function(...)` | Overrides the default update dialog. | N/A       |
 | **`openOnDownload`** | `bool` | Whether Updat should open the installer automatically once it has been downloaded. | `true`      |
 | **`closeOnInstall`** | `bool` | Whether Updat should close the application automatically once it has been downloaded. | `false`      |
-
-
-
-
-
