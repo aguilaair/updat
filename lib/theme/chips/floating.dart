@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../updat.dart';
 
-Widget floatingDialog({
+Widget floatingExtendedChip({
   required BuildContext context,
   required String? latestVersion,
   required String appVersion,
