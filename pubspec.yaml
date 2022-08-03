@@ -9,7 +9,6 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  dio: ^4.0.6
   flutter:
     sdk: flutter
   path: ^1.8.1
@@ -17,6 +16,7 @@ dependencies:
   pub_semver: ^2.1.1
   url_launcher: ^6.1.5
   http: ^0.13.4
+  flutter_markdown: ^0.6.10+3
 
 dev_dependencies:
   flutter_test:
