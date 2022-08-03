@@ -17,6 +17,7 @@ void defaultDialog({
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      scrollable: true,
       title: Flex(
         direction:
             Theme.of(context).useMaterial3 ? Axis.vertical : Axis.horizontal,

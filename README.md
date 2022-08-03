@@ -74,6 +74,9 @@ To change the theme simply add the desired theme to the builder and you're set.
 - `flatChip` which is an textButton that only shows when an update is available
 - `flatChipWithCheckFor` which is an textButton that shows under all condition, allowing to recheck for updates.
 
+- `floatingExtendedChip` which is a compact version of the dialog, which is a bit bogger and garbs user's attention more easily.
+
 #### Dialogs
 
-- `default` which is the default, M2 and M3 dialog that shows by default.
+- `defaultDialog` which is the default, M2 and M3 dialog that shows by default.
+- `defaultWithMdDialog` which is the default, M2 and M3 dialog with a markdown body for the changelog. Ideal for GitHub-based updates.

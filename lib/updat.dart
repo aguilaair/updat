@@ -53,8 +53,8 @@ class UpdatWidget extends StatefulWidget {
     required void Function() dismissUpdate,
   })? updateChipBuilder;
 
-  /// This Function can be used to override the default dialog shown when there is a new version available.
-  final Widget Function({
+  /// This Function can be used to override the default dialog shown when there is a new version available. You must call `showDialog` yourself.
+  final void Function({
     required BuildContext context,
     required String? latestVersion,
     required String appVersion,
@@ -206,7 +206,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         openDialog: openDialog,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
-        appVersion: appVersion.toString(), 
+        appVersion: appVersion.toString(),
         dismissUpdate: dismiss,
       );
     }
