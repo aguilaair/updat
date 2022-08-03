@@ -1,4 +1,9 @@
 //import 'package:flex_color_picker/flex_color_picker.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:updat/theme/chips/floating.dart';
 import 'package:updat/updat.dart';
@@ -69,20 +74,32 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: UpdatWidget(
-        currentVersion: "1.0.0",
         getLatestVersion: () async {
-          return "1.0.1";
+          // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
+          final data = await http.get(Uri.parse(
+            "https://api.github.com/repos/aguilaair/updat/releases/latest",
+          ));
+
+          // Return the tag name, which is always a semantically versioned string.
+          return jsonDecode(data.body)["tag_name"];
         },
-        getBinaryUrl: (_) async {
-          return "https://github.com/fluttertools/sidekick/releases/download/1.0.0/sidekick-windows-1.0.0-MS-S.msix";
+        getBinaryUrl: (version) async {
+          // Github also gives us a great way to download the binary for a certain release (as long as we use a consistent naming scheme)
+
+          // Make sure that this link includes the platform extension with which to save your binary.
+          // If you use https://exapmle.com/latest/macos for instance then you need to create your own file using `getDownloadFileLocation`
+          return "https://github.com/aguilaair/updat/releases/download/$version/updat-${Platform.operatingSystem}-$version.$platformExt";
         },
-        appName: "Updat Example",
-        closeOnInstall: false,
-        openOnDownload: true,
+        appName: "Updat Example", // This is used to name the downloaded files.
         getChangelog: (_, __) async {
-          return "This is a changelog";
+          // That same latest endpoint gives us access to a markdown-flavored release body. Perfect!
+          final data = await http.get(Uri.parse(
+            "https://api.github.com/repos/fluttertools/sidekick/releases/latest",
+          ));
+          return jsonDecode(data.body)["body"];
         },
-        updateChipBuilder: floatingDialog,
+        updateChipBuilder: floatingExtendedChip,
+        currentVersion: '0.0.1',
       ),
       body: Container(
         width: double.infinity,
@@ -210,5 +227,28 @@ class _ThemeModeManagerState extends State<ThemeModeManager> {
   @override
   Widget build(BuildContext context) {
     return widget.builder!(_themeMode);
+  }
+}
+
+String get platformExt {
+  switch (Platform.operatingSystem) {
+    case 'windows':
+      {
+        return 'msix';
+      }
+
+    case 'macos':
+      {
+        return 'dmg';
+      }
+
+    case 'linux':
+      {
+        return 'AppImage';
+      }
+    default:
+      {
+        return 'zip';
+      }
   }
 }
