@@ -11,6 +11,7 @@ Widget flatChipWithCheckFor({
   required void Function() openDialog,
   required void Function() startUpdate,
   required void Function() launchInstaller,
+  required void Function() dismissUpdate,
 }) {
   if (UpdatStatus.available == status ||
       UpdatStatus.availableWithChangelog == status) {

@@ -1,7 +1,7 @@
 //import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:updat/theme/chips/floating.dart';
 import 'package:updat/updat.dart';
-import 'package:updat/theme/chips/flat_with_check_for.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
@@ -82,9 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         getChangelog: (_, __) async {
           return "This is a changelog";
         },
-        callback: (status) {
-          print(status);
-        },
+        updateChipBuilder: floatingDialog,
       ),
       body: Container(
         width: double.infinity,

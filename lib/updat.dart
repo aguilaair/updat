@@ -50,6 +50,7 @@ class UpdatWidget extends StatefulWidget {
     required void Function() openDialog,
     required void Function() startUpdate,
     required void Function() launchInstaller,
+    required void Function() dismissUpdate,
   })? updateChipBuilder;
 
   /// This Function can be used to override the default dialog shown when there is a new version available.
@@ -63,6 +64,7 @@ class UpdatWidget extends StatefulWidget {
     required void Function() openDialog,
     required void Function() startUpdate,
     required void Function() launchInstaller,
+    required void Function() dismissUpdate,
   })? updateDialogBuilder;
 
   /// Get the url of the binary file to download provided with a certain version.
@@ -122,6 +124,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         status: status,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
+        dismissUpdate: dismiss,
       );
     } else {
       return defaultChip(
@@ -133,6 +136,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         status: status,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
+        dismissUpdate: dismiss,
       );
     }
   }
@@ -190,6 +194,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
         appVersion: appVersion.toString(),
+        dismissUpdate: dismiss,
       );
     } else {
       defaultDialog(
@@ -201,9 +206,16 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         openDialog: openDialog,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
-        appVersion: appVersion.toString(),
+        appVersion: appVersion.toString(), 
+        dismissUpdate: dismiss,
       );
     }
+  }
+
+  void dismiss() {
+    setState(() {
+      status = UpdatStatus.dismissed;
+    });
   }
 
   void startUpdate() async {
@@ -266,4 +278,5 @@ enum UpdatStatus {
   idle,
   downloading,
   readyToInstall,
+  dismissed,
 }
