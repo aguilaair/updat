@@ -5,15 +5,16 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:updat/theme/chips/floating.dart';
 import 'package:updat/updat.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import 'package:updat/theme/chips/floating_with_silent_download.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+  class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         getLatestVersion: () async {
           // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
           final data = await http.get(Uri.parse(
-            "https://api.github.com/repos/aguilaair/updat/releases/latest",
+            "https://api.github.com/repos/fluttertools/sidekick/releases/latest",
           ));
 
           // Return the tag name, which is always a semantically versioned string.
@@ -88,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           // Make sure that this link includes the platform extension with which to save your binary.
           // If you use https://exapmle.com/latest/macos for instance then you need to create your own file using `getDownloadFileLocation`
-          return "https://github.com/aguilaair/updat/releases/download/$version/updat-${Platform.operatingSystem}-$version.$platformExt";
+          return "https://github.com/fluttertools/sidekick/releases/download/$version/sidekick-${Platform.operatingSystem}-$version.$platformExt";
         },
         appName: "Updat Example", // This is used to name the downloaded files.
         getChangelog: (_, __) async {
@@ -98,8 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ));
           return jsonDecode(data.body)["body"];
         },
-        updateChipBuilder: floatingExtendedChip,
+        updateChipBuilder: floatingExtendedChipWithSilentDownload,
         currentVersion: '0.0.1',
+        callback: (status) {
+          print(status);
+        },
       ),
       body: Container(
         width: double.infinity,

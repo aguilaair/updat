@@ -150,9 +150,6 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         setState(() {
           this.latestVersion = Version.parse(latestVersion);
           if (this.latestVersion! > appVersion) {
-            setState(() {
-              status = UpdatStatus.available;
-            });
             if (widget.getChangelog != null) {
               widget.getChangelog!(latestVersion, widget.currentVersion)
                   .then((changelogRec) {
@@ -164,6 +161,10 @@ class _UpdatWidgetState extends State<UpdatWidget> {
                 }
               }).catchError((_) {
                 return;
+              });
+            } else {
+              setState(() {
+                status = UpdatStatus.available;
               });
             }
           } else {
@@ -219,6 +220,16 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   }
 
   void startUpdate() async {
+    if (status != UpdatStatus.available &&
+        status != UpdatStatus.availableWithChangelog) {
+      if (status == UpdatStatus.readyToInstall) {
+        launchInstaller();
+      }
+      return;
+    }
+    setState(() {
+      status = UpdatStatus.downloading;
+    });
     // Get the URL to download the file from.
     final url = await widget.getBinaryUrl(latestVersion!.toString());
 
@@ -236,9 +247,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
 
     if (installerFile != null) {
       // Download the file.
-      setState(() {
-        status = UpdatStatus.downloading;
-      });
+
       try {
         await downloadRelease(installerFile!, url);
       } catch (e) {
@@ -257,6 +266,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   }
 
   void launchInstaller() {
+    if (status != UpdatStatus.readyToInstall) return;
     // Open the file.
     try {
       openInstaller(installerFile!);
