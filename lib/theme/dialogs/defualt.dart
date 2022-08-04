@@ -11,7 +11,7 @@ void defaultDialog({
   required void Function() checkForUpdate,
   required void Function() openDialog,
   required void Function() startUpdate,
-  required void Function() launchInstaller,
+  required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
   showDialog(

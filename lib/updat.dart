@@ -49,7 +49,7 @@ class UpdatWidget extends StatefulWidget {
     required void Function() checkForUpdate,
     required void Function() openDialog,
     required void Function() startUpdate,
-    required void Function() launchInstaller,
+    required Future<void> Function() launchInstaller,
     required void Function() dismissUpdate,
   })? updateChipBuilder;
 
@@ -63,7 +63,7 @@ class UpdatWidget extends StatefulWidget {
     required void Function() checkForUpdate,
     required void Function() openDialog,
     required void Function() startUpdate,
-    required void Function() launchInstaller,
+    required Future<void> Function() launchInstaller,
     required void Function() dismissUpdate,
   })? updateDialogBuilder;
 
@@ -265,11 +265,11 @@ class _UpdatWidgetState extends State<UpdatWidget> {
     }
   }
 
-  void launchInstaller() {
+  Future<void> launchInstaller() async {
     if (status != UpdatStatus.readyToInstall) return;
     // Open the file.
     try {
-      openInstaller(installerFile!);
+      await openInstaller(installerFile!);
       if (widget.closeOnInstall) exit(0);
     } catch (e) {
       setState(() {

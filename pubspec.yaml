@@ -17,6 +17,7 @@ dependencies:
   url_launcher: ^6.1.5
   http: ^0.13.4
   flutter_markdown: ^0.6.10+3
+  window_manager: ^0.2.5
 
 dev_dependencies:
   flutter_test:

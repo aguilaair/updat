@@ -1,0 +1,192 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:updat/theme/chips/default.dart';
+import 'package:updat/updat.dart';
+import 'package:window_manager/window_manager.dart';
+
+class UpdatWindowManager extends StatefulWidget {
+  final Widget child;
+
+  const UpdatWindowManager({
+    required this.currentVersion,
+    required this.getLatestVersion,
+    required this.getBinaryUrl,
+    required this.appName,
+    this.getDownloadFileLocation,
+    this.updateChipBuilder,
+    this.updateDialogBuilder,
+    this.getChangelog,
+    this.callback,
+    this.openOnDownload = true,
+    this.closeOnInstall = false,
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  ///  This function will be invoked to ckeck if there is a new version available. The return string must be a semantic version.
+  final Future<String?> Function() getLatestVersion;
+
+  ///  This function will be invoked if there is a new release to get the changes.
+  final Future<String?> Function(
+    String latestVersion,
+    String appVersion,
+  )? getChangelog;
+
+  /// Current version of the app. This will be used to compare the latest version. The String must be a semantic version.
+  final String currentVersion;
+
+  final void Function(UpdatStatus status)? callback;
+
+  /// This Function can be used to override the default chip shown when there is a new version available.
+  final Widget Function({
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required Future<void> Function() launchInstaller,
+    required void Function() dismissUpdate,
+  })? updateChipBuilder;
+
+  /// This Function can be used to override the default dialog shown when there is a new version available. You must call `showDialog` yourself.
+  final void Function({
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required String? changelog,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required Future<void> Function() launchInstaller,
+    required void Function() dismissUpdate,
+  })? updateDialogBuilder;
+
+  /// Get the url of the binary file to download provided with a certain version.
+  final Future<String> Function(String? latestVersion) getBinaryUrl;
+
+  /// Override the default download location.
+  final Future<File> Function(String? latestVersion)? getDownloadFileLocation;
+
+  /// The name of the app.
+  final String appName;
+
+  /// If true, the installer will be opened when the update is downloaded.
+  final bool openOnDownload;
+
+  /// If true, the app will be closed when the installer is launched.
+  final bool closeOnInstall;
+
+  @override
+  State<UpdatWindowManager> createState() => _UpdatWindowManagerState();
+}
+
+class _UpdatWindowManagerState extends State<UpdatWindowManager>
+    with WindowListener {
+  @override
+  void initState() {
+    windowManager.addListener(this);
+    _init();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  void _init() async {
+    // Add this line to override the default close handler
+    await windowManager.setPreventClose(true);
+    setState(() {});
+  }
+
+  UpdatStatus status = UpdatStatus.idle;
+
+  void Function()? checkForUpdate;
+  void Function()? openDialog;
+  void Function()? startUpdate;
+  Future<void> Function()? launchInstaller;
+  void Function()? dismissUpdate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(child: widget.child),
+        Positioned(
+          right: 10,
+          bottom: 10,
+          child: UpdatWidget(
+            updateChipBuilder: passthroughChip,
+            updateDialogBuilder: widget.updateDialogBuilder,
+            appName: widget.appName,
+            currentVersion: widget.currentVersion,
+            getLatestVersion: widget.getLatestVersion,
+            getBinaryUrl: widget.getBinaryUrl,
+            getDownloadFileLocation: widget.getDownloadFileLocation,
+            getChangelog: widget.getChangelog,
+            openOnDownload: false,
+            closeOnInstall: false,
+            callback: (status) {
+              widget.callback?.call(status);
+              this.status = status;
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  void onWindowClose() async {
+    await windowManager.isPreventClose();
+    await launchInstaller?.call();
+    await windowManager.destroy();
+  }
+
+  Widget passthroughChip({
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required Future<void> Function() launchInstaller,
+    required void Function() dismissUpdate,
+  }) {
+    this.startUpdate = startUpdate;
+    this.launchInstaller = launchInstaller;
+    this.dismissUpdate = dismissUpdate;
+    this.checkForUpdate = checkForUpdate;
+    this.openDialog = openDialog;
+
+    return widget.updateChipBuilder?.call(
+          context: context,
+          latestVersion: latestVersion,
+          appVersion: appVersion,
+          status: status,
+          checkForUpdate: checkForUpdate,
+          openDialog: openDialog,
+          startUpdate: startUpdate,
+          launchInstaller: launchInstaller,
+          dismissUpdate: dismissUpdate,
+        ) ??
+        defaultChip(
+          context: context,
+          latestVersion: latestVersion,
+          appVersion: appVersion,
+          status: status,
+          checkForUpdate: checkForUpdate,
+          openDialog: openDialog,
+          startUpdate: startUpdate,
+          launchInstaller: launchInstaller,
+          dismissUpdate: dismissUpdate,
+        );
+  }
+}
