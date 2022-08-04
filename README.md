@@ -69,12 +69,15 @@ To change the theme simply add the desired theme to the builder and you're set.
 #### Chips
 
 - `defaultChip` which is an elevatedButton that only shows when an update is available. Shown by default.
-- `defaultChipWithCheckFor` which is an elevatedButton that shows under all condition, allowing to recheck for updates.
+- `defaultChipWithCheckFor` which is an elevatedButton that shows under all conditions, allowing to recheck for updates.
+- `defaultChipWithSilentDownload` which is an elevatedButton that only shows when an update is downloaded and ready to install.
 
 - `flatChip` which is an textButton that only shows when an update is available
 - `flatChipWithCheckFor` which is an textButton that shows under all condition, allowing to recheck for updates.
+- `defaultChipWithSilentDownload` which is an textButton that only shows when an update is downloaded and ready to install.
 
-- `floatingExtendedChip` which is a compact version of the dialog, which is a bit bogger and garbs user's attention more easily.
+- `floatingExtendedChip` which is a compact version of the dialog, which is a bit bigger and grabs user's attention more easily.
+- `floatingExtendedChipWithSilentDownload` which is a compact version of the dialog, which is a bit bigger and grabs user's attention more easily, and only shows when the update is ready to be installed.
 
 #### Dialogs
 
