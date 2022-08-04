@@ -57,7 +57,7 @@ Widget floatingExtendedChipWithSilentDownload({
                 const SizedBox(width: 10),
                 ElevatedButton.icon(
                   onPressed: startUpdate,
-                  icon: const Icon(Icons.system_update_alt_rounded),
+                  icon: const Icon(Icons.install_desktop_rounded),
                   label: const Text('Install Now'),
                 ),
               ],
