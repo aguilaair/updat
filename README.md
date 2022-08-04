@@ -4,6 +4,12 @@
 
 Updat is a simple-to-use reliable flutter-native updater that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
 
+<div align="center">
+  <a href="https://github.com/aguilaair/updat/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aguilaair/updat?color=orange&style=flat-square"></a>
+  <a href="https://pub.dev/packages/updat"><img alt="Pub.dev" src="https://img.shields.io/pub/v/updat.svg?label=Pub.dev&color=blue&style=flat-square"></a>
+  <a href="https://github.com/aguilaair/updat/issues"><img alt="Github Issues" src="https://img.shields.io/github/issues/aguilaair/updat?label=Issues&color=green&style=flat-square"></a>
+ </div>
+
 ## Demo
 
 ![demo](https://github.com/aguilaair/updat/blob/main/promo/demo.gif)
