@@ -74,7 +74,7 @@ To change the theme simply add the desired theme to the builder and you're set.
 
 - `flatChip` which is an textButton that only shows when an update is available
 - `flatChipWithCheckFor` which is an textButton that shows under all condition, allowing to recheck for updates.
-- `defaultChipWithSilentDownload` which is an textButton that only shows when an update is downloaded and ready to install.
+- `flatChipWithSilentDownload` which is an textButton that only shows when an update is downloaded and ready to install.
 
 - `floatingExtendedChip` which is a compact version of the dialog, which is a bit bigger and grabs user's attention more easily.
 - `floatingExtendedChipWithSilentDownload` which is a compact version of the dialog, which is a bit bigger and grabs user's attention more easily, and only shows when the update is ready to be installed.
