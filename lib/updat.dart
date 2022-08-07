@@ -266,7 +266,10 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   }
 
   Future<void> launchInstaller() async {
-    if (status != UpdatStatus.readyToInstall) return;
+    if (status != UpdatStatus.readyToInstall &&
+        status != UpdatStatus.dismissed) {
+      return;
+    }
     // Open the file.
     try {
       await openInstaller(installerFile!);

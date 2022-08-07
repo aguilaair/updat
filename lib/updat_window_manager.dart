@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:updat/theme/chips/default.dart';
+import 'package:updat/theme/chips/floating_with_silent_download.dart';
 import 'package:updat/updat.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -177,7 +177,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
           launchInstaller: launchInstaller,
           dismissUpdate: dismissUpdate,
         ) ??
-        defaultChip(
+        floatingExtendedChipWithSilentDownload(
           context: context,
           latestVersion: latestVersion,
           appVersion: appVersion,
