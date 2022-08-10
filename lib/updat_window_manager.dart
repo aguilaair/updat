@@ -8,6 +8,10 @@ import 'package:window_manager/window_manager.dart';
 class UpdatWindowManager extends StatefulWidget {
   final Widget child;
 
+  /// UpdatWindowManager is designed to make automatic update handling simple. The update is (by default) automatically
+  /// downloaded and the user is notified that the update is ready. Then, the user may decide to install or dismiss the update.
+  /// Even if the update is dismissed the installer will then launch just before the app is closed. This widget is ideal to use with
+  /// silent installes such as `msi` on Windows as the update will start without user interaction in the bakground.
   const UpdatWindowManager({
     required this.currentVersion,
     required this.getLatestVersion,
@@ -18,7 +22,7 @@ class UpdatWindowManager extends StatefulWidget {
     this.updateDialogBuilder,
     this.getChangelog,
     this.callback,
-    this.openOnDownload = true,
+    this.openOnDownload = false,
     this.closeOnInstall = false,
     Key? key,
     required this.child,

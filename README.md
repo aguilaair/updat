@@ -88,4 +88,3 @@ To change the theme simply add the desired theme to the builder and you're set.
 #### Dialogs
 
 - `defaultDialog` which is the default, M2 and M3 dialog that shows by default.
-- `defaultWithMdDialog` which is the default, M2 and M3 dialog with a markdown body for the changelog. Ideal for GitHub-based updates.
