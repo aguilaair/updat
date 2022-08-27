@@ -294,15 +294,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
-  thememode_selector:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: main
-      resolved-ref: "30e3c6ae592305adbb4d32cec2e1b627002f310f"
-      url: "git://github.com/aguilaair/thememode_selector"
-    source: git
-    version: "0.1.0"
   typed_data:
     dependency: transitive
     description:
