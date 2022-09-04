@@ -24,6 +24,7 @@ class UpdatWindowManager extends StatefulWidget {
     this.callback,
     this.openOnDownload = false,
     this.closeOnInstall = false,
+    this.launchOnExit = true,
     Key? key,
     required this.child,
   }) : super(key: key);
@@ -83,6 +84,9 @@ class UpdatWindowManager extends StatefulWidget {
 
   /// If true, the app will be closed when the installer is launched.
   final bool closeOnInstall;
+
+  /// If true, the installer will be launched when the app is closed.
+  final bool launchOnExit;
 
   @override
   State<UpdatWindowManager> createState() => _UpdatWindowManagerState();
@@ -148,9 +152,11 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
 
   @override
   void onWindowClose() async {
-    await windowManager.isPreventClose();
-    await launchInstaller?.call();
-    await windowManager.destroy();
+    if (widget.launchOnExit) {
+      await windowManager.isPreventClose();
+      await launchInstaller?.call();
+      await windowManager.destroy();
+    }
   }
 
   Widget passthroughChip({
