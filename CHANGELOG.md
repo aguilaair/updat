@@ -1,3 +1,9 @@
+## 1.2.0
+
+* New  `UpdateWindowManager` that simplifies usage
+* Better MacOS support
+* Add new themes (silent downloads, flat) 
+
 ## 1.1.0
 
 * Add `callback` function to `Updat`

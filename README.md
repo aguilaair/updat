@@ -42,13 +42,15 @@ UpdatWidget(
 
 That should get you up and running in just a few seconds ⚡️.
 
+or use the `UpdatWindowManager`, and let updat handle everything on autopilot. Just place it right after your `MaterialApp`.
+
 Want to learn how to integrate Updat in your app?
 
 [Integration Instructions](https://github.com/aguilaair/updat/wiki/How-to-integrate-Updat)
 
 ## Configuration
 
-### Available `Updat` arguments
+### Available `UpdatWidget` arguments
 
 | Parameter           | Type      | Value                                                                                                                                    | Default   |
 | :------------------ | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
