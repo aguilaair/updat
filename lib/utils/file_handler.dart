@@ -39,7 +39,7 @@ Future<File> downloadRelease(File file, String url) async {
 
 Future<void> openInstaller(File file) async {
   if (file.existsSync()) {
-    await openLink("file://${file.absolute.path.replaceAll("\\", "/")}");
+    await openUri(Uri(path: file.absolute.path, scheme: 'file'));
   } else {
     throw Exception(
       'Installer does not exists, you have to download it first',
