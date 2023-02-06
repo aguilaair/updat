@@ -1,3 +1,8 @@
+## 1.2.0+1
+
+* Change to MPL-2.0 license :D
+* Dependency updates
+
 ## 1.2.0
 
 * New  `UpdateWindowManager` that simplifies usage
