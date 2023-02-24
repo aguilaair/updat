@@ -8,8 +8,19 @@ import 'package:http/http.dart' as http;
 
 import 'open_link.dart';
 
-Future<File> getDownloadFileLocation(
-    String release, String appName, String extension) async {
+Future<File?> getCustomDownloadFileLocation(String release, String appName) async {
+  final downloadDir = await getDownloadsDirectory();
+  if (downloadDir == null) {
+    throw Exception('Unable to get downloads directory, release: $release');
+  }
+  final filePath = p.join(
+    downloadDir.absolute.path,
+    '$appName-$release',
+  );
+  return File(filePath);
+}
+
+Future<File> getDownloadFileLocation(String release, String appName, String extension) async {
   final downloadDir = await getDownloadsDirectory();
   if (downloadDir == null) {
     throw Exception('Unable to get downloads directory');
