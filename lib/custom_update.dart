@@ -37,19 +37,25 @@ void updateValues() {
 }
 
 startUpdate({required String url, bool closeOnInstall = true}) async {
+  print("autoupdate: started");
   status = UpdatStatus.downloading;
-  File? installerFile = await getCustomDownloadFileLocation(
+  print("autoupdate:  downloading");
+  File? installerFile = await getDownloadFileLocation(
     _latestVersion!.toString(),
     'bridge',
+    url.split(".").last,
   );
+  print("autoupdate: getDownloadFileLocation success, $installerFile");
 
   try {
-    await downloadRelease(installerFile!, url);
+    await downloadRelease(installerFile, url);
   } catch (e) {
     print(installerFile == null ? 'Installed location null' : (e));
     status = UpdatStatus.error;
     return;
   }
+
+  print("autoupdate: download release done");
 
   if (status != UpdatStatus.available) {
     if (status == UpdatStatus.readyToInstall && status != UpdatStatus.downloading) {
@@ -63,6 +69,7 @@ startUpdate({required String url, bool closeOnInstall = true}) async {
 }
 
 Future<void> launchInstaller({required bool closeOnInstall, required File installerFile}) async {
+  print("autoupdate: launch installer");
   if (status != UpdatStatus.readyToInstall && status != UpdatStatus.dismissed) {
     return;
   }
