@@ -68,7 +68,7 @@ startUpdate({required String url, bool closeOnInstall = true}) async {
 }
 
 Future<void> launchInstaller({required bool closeOnInstall, required File installerFile}) async {
-  print("autoupdate: launch installer");
+  print("autoupdate: launch installer $installerFile");
   if (status != UpdatStatus.readyToInstall && status != UpdatStatus.dismissed) {
     return;
   }
