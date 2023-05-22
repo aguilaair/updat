@@ -52,19 +52,19 @@ Want to learn how to integrate Updat in your app?
 
 ### Available `UpdatWidget` arguments
 
-| Parameter           | Type      | Value                                                                                                                                    | Default   |
-| :------------------ | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
-| **`currentVersion`**         | `String`   | **Required**. Must be a semantic version. This is the current package's version.                                                                 | N/A       |
-| **`getLatestVersion`**    | `Future<String>`  | **Required**. Must be a semantic version. This should request the latest version to the server                                  | N/A |
-| **`getBinaryUrl`** | `Future<String>` | **Required**. This should provide the link download the binary for a certain app version. Arguments: `latestVersion` | N/A       |
-| **`appNme`** | `String` | **Required**. The Application's name. It is used to name the binaries when downloading. | N/A       |
-| **`getChangelog`** | `Future<String>` | This will render a plain text view of the changelog. | N/A       |
-| **`callback`** | `void Function(UpdatStatus)` | A callback that is called when the UpdatStatus gets updated. | N/A       |
-| **`getDownloadFileLocation`** | `Future<File>` | Choose where to download the update. | N/A       |
-| **`updateChipBuilder`** | `Widget Function(...)` | Overrides the default update chip. | N/A       |
-| **`updateDialogBuilder`** | `Widget Function(...)` | Overrides the default update dialog. | N/A       |
-| **`openOnDownload`** | `bool` | Whether Updat should open the installer automatically once it has been downloaded. | `true`      |
-| **`closeOnInstall`** | `bool` | Whether Updat should close the application automatically once it has been downloaded. | `false`      |
+| Parameter                     | Type                         | Value                                                                                                                | Default |
+|:------------------------------|:-----------------------------|:---------------------------------------------------------------------------------------------------------------------|:--------|
+| **`currentVersion`**          | `String`                     | **Required**. Must be a semantic version. This is the current package's version.                                     | N/A     |
+| **`getLatestVersion`**        | `Future<String>`             | **Required**. Must be a semantic version. This should request the latest version to the server                       | N/A     |
+| **`getBinaryUrl`**            | `Future<String>`             | **Required**. This should provide the link download the binary for a certain app version. Arguments: `latestVersion` | N/A     |
+| **`appNme`**                  | `String`                     | **Required**. The Application's name. It is used to name the binaries when downloading.                              | N/A     |
+| **`getChangelog`**            | `Future<String>`             | This will render a plain text view of the changelog.                                                                 | N/A     |
+| **`callback`**                | `void Function(UpdatStatus)` | A callback that is called when the UpdatStatus gets updated.                                                         | N/A     |
+| **`getDownloadFileLocation`** | `Future<File>`               | Choose where to download the update.                                                                                 | N/A     |
+| **`updateChipBuilder`**       | `Widget Function(...)`       | Overrides the default update chip.                                                                                   | N/A     |
+| **`updateDialogBuilder`**     | `Widget Function(...)`       | Overrides the default update dialog.                                                                                 | N/A     |
+| **`openOnDownload`**          | `bool`                       | Whether Updat should open the installer automatically once it has been downloaded.                                   | `true`  |
+| **`closeOnInstall`**          | `bool`                       | Whether Updat should close the application automatically once it has been downloaded.                                | `false` |
 
 ### Theming
 
@@ -90,3 +90,12 @@ To change the theme simply add the desired theme to the builder and you're set.
 #### Dialogs
 
 - `defaultDialog` which is the default, M2 and M3 dialog that shows by default.
+
+### Advanced Usage  
+If you need to send additional HTTP headers when downloading a release asset, you may define your
+headers by setting the `downloadReleaseHeaders` property of `UpdatGlobalOptions`.
+```dart
+UpdatGlobalOptions.downloadReleaseHeaders = {
+  "Authorization": "Bearer gh_pat_1234567889abcdefghijklm",
+}
+```
