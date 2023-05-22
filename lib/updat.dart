@@ -251,6 +251,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
       try {
         await downloadRelease(installerFile!, url);
       } catch (e) {
+        print(e);
         setState(() {
           status = UpdatStatus.error;
         });
@@ -275,6 +276,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
       await openInstaller(installerFile!);
       if (widget.closeOnInstall) exit(0);
     } catch (e) {
+      print(e);
       setState(() {
         status = UpdatStatus.error;
       });
