@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:path/path.dart' as p;
@@ -21,17 +22,22 @@ Future<File> getDownloadFileLocation(
   return File(filePath);
 }
 
-Future<File> downloadRelease(File file, String url) async {
+Future<File> downloadRelease(File file, String url, String appName) async {
   var res = await http.get(
     Uri.parse(url),
   );
   if (res.statusCode == 200) {
     await file.writeAsBytes(res.bodyBytes);
+    if (file.path.endsWith("zip")) {
+      final outDir = Directory(p.join(p.dirname(file.path), appName));
+      outDir.createSync(recursive: true);
+      extractFileToDisk(file.absolute.path, outDir.absolute.path);
+    }
     // Return with new installed status
     return file;
   } else {
     throw Exception(
-      'There was an issue downloading the file, plese try again later.\n'
+      'There was an issue downloading the file, please try again later.\n'
       'Code ${res.statusCode}',
     );
   }
