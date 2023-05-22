@@ -249,7 +249,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
       // Download the file.
 
       try {
-        await downloadRelease(installerFile!, url);
+        await downloadRelease(installerFile!, url, widget.appName);
       } catch (e) {
         setState(() {
           status = UpdatStatus.error;
@@ -272,7 +272,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
     }
     // Open the file.
     try {
-      await openInstaller(installerFile!);
+      await openInstaller(installerFile!, widget.appName);
       if (widget.closeOnInstall) exit(0);
     } catch (e) {
       setState(() {
