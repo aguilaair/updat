@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-
 import 'package:path/path.dart' as p;
-
 import 'package:http/http.dart' as http;
 
-import 'open_link.dart';
+import 'package:updat/utils/global_options.dart';
+import 'package:updat/utils/open_link.dart';
 
 Future<File> getDownloadFileLocation(
     String release, String appName, String extension) async {
@@ -24,6 +23,9 @@ Future<File> getDownloadFileLocation(
 Future<File> downloadRelease(File file, String url) async {
   var res = await http.get(
     Uri.parse(url),
+    headers: {
+      ...UpdatGlobalOptions.downloadReleaseHeaders,
+    },
   );
   if (res.statusCode == 200) {
     await file.writeAsBytes(res.bodyBytes);
