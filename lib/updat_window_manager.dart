@@ -138,8 +138,8 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
             getBinaryUrl: widget.getBinaryUrl,
             getDownloadFileLocation: widget.getDownloadFileLocation,
             getChangelog: widget.getChangelog,
-            openOnDownload: false,
-            closeOnInstall: false,
+            openOnDownload: widget.openOnDownload,
+            closeOnInstall: widget.closeOnInstall,
             callback: (status) {
               widget.callback?.call(status);
               this.status = status;
@@ -155,6 +155,8 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     if (widget.launchOnExit) {
       await windowManager.isPreventClose();
       await launchInstaller?.call();
+      await windowManager.destroy();
+    } else {
       await windowManager.destroy();
     }
   }
