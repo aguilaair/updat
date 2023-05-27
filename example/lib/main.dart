@@ -11,10 +11,12 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:updat/theme/chips/floating_with_silent_download.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,21 +28,23 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               useMaterial3: true,
               primarySwatch: Colors.blue,
-              primaryColor: Color(0xff1890ff),
+              primaryColor: const Color(0xff1890ff),
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             darkTheme: ThemeData.dark()
                 .copyWith(primaryColor: Colors.blue, useMaterial3: true),
             themeMode: themeMode,
-            home: MyHomePage(),
+            home: const MyHomePage(),
           );
         });
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -51,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       TextEditingController(text: "Update Available");
   TextEditingController subtitleController =
       TextEditingController(text: "New version available");
-  Color color = Color(0xff1890ff);
+  Color color = const Color(0xff1890ff);
 
   @override
   void dispose() {
@@ -100,9 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       updateChipBuilder: floatingExtendedChipWithSilentDownload,
       currentVersion: '0.0.1',
-      callback: (status) {
-        print(status);
-      },
+      callback: (status) {},
       child: Scaffold(
         /*floatingActionButton: UpdatWidget(
           getLatestVersion: () async {
@@ -135,45 +137,45 @@ class _MyHomePageState extends State<MyHomePage> {
             print(status);
           },
         ),*/
-        body: Container(
+        body: SizedBox(
           width: double.infinity,
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.only(left: 50, right: 50),
-              constraints: BoxConstraints(maxWidth: 800),
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              constraints: const BoxConstraints(maxWidth: 800),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   Text(
                     "Updat Flutter Demo",
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Wrap(
                     children: [
                       ElevatedButton.icon(
-                        icon: Icon(Icons.code_rounded),
+                        icon: const Icon(Icons.code_rounded),
                         onPressed: () {
                           launchUrlString("https://github.com/aguilaair/updat");
                         },
-                        label: Text("View the code"),
+                        label: const Text("View the code"),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton.icon(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.open_in_browser_rounded,
                           color: Color(0xff1890ff),
                         ),
                         onPressed: () {
                           launchUrlString("https://pub.dev/packages/updat");
                         },
-                        label: Text(
+                        label: const Text(
                           "View the Package",
                           style: TextStyle(color: Colors.black),
                         ),
@@ -189,12 +191,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                       "Hello! Try customizing the update widget's display text and colors."),
-                  Divider(
+                  const Divider(
                     height: 20,
                   ),
                   Wrap(
@@ -204,8 +206,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Change the theme:"),
-                          SizedBox(
+                          const Text("Change the theme:"),
+                          const SizedBox(
                             height: 22,
                           ),
                           Switch(
@@ -239,7 +241,7 @@ class ThemeModeManager extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ThemeModeManagerState createState() =>
+  State<ThemeModeManager> createState() =>
       _ThemeModeManagerState(themeMode: defaultThemeMode);
 
   static _ThemeModeManagerState? of(BuildContext context) {
