@@ -1,3 +1,8 @@
+## 1.3.1
+
+* Add support for `updatWindowManager` to mobile platforms and web. (Just bypasses the updat system)
+* Update dependencies
+
 ## 1.3.0
 
 * Support unzipping (<https://github.com/aguilaair/updat/issues/5>)

@@ -242,8 +242,10 @@ class ThemeModeManager extends StatefulWidget {
 
   @override
   State<ThemeModeManager> createState() =>
+      // ignore: no_logic_in_create_state
       _ThemeModeManagerState(themeMode: defaultThemeMode);
 
+  // ignore: library_private_types_in_public_api
   static _ThemeModeManagerState? of(BuildContext context) {
     return context.findAncestorStateOfType<_ThemeModeManagerState>();
   }

@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:updat/theme/chips/floating_with_silent_download.dart';
@@ -94,16 +95,24 @@ class UpdatWindowManager extends StatefulWidget {
 
 class _UpdatWindowManagerState extends State<UpdatWindowManager>
     with WindowListener {
+  final shouldRun =
+      !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
   @override
   void initState() {
-    windowManager.addListener(this);
-    _init();
+    // Check if the app is running on Web
+    if (shouldRun) {
+      windowManager.addListener(this);
+      _init();
+    }
+
     super.initState();
   }
 
   @override
   void dispose() {
-    windowManager.removeListener(this);
+    if (shouldRun) {
+      windowManager.removeListener(this);
+    }
     super.dispose();
   }
 
@@ -130,7 +139,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
           right: 10,
           bottom: 10,
           child: UpdatWidget(
-            updateChipBuilder: passthroughChip,
+            updateChipBuilder: shouldRun ? passthroughChip : mobileBypass,
             updateDialogBuilder: widget.updateDialogBuilder,
             appName: widget.appName,
             currentVersion: widget.currentVersion,
@@ -159,6 +168,20 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     } else {
       await windowManager.destroy();
     }
+  }
+
+  Widget mobileBypass({
+    required BuildContext context,
+    required String? latestVersion,
+    required String appVersion,
+    required UpdatStatus status,
+    required void Function() checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required Future<void> Function() launchInstaller,
+    required void Function() dismissUpdate,
+  }) {
+    return Container();
   }
 
   Widget passthroughChip({

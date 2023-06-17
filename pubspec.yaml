@@ -1,5 +1,5 @@
 name: updat
-version: 1.3.0
+version: 1.3.1
 homepage: https://github.com/aguilaair/updat
 description: Updat is a simple-to-use reliable flutter-native updater that handles your application's updates.
 
@@ -19,6 +19,7 @@ dependencies:
   flutter_markdown: ^0.6.10+3
   window_manager: ^0.3.0
   archive: ^3.3.7
+  universal_io: ^2.2.2
 
 dev_dependencies:
   flutter_test:
