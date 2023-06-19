@@ -1,0 +1,65 @@
+name: Build and Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "3.10.5"
+
+      - name: Flutter pub get
+        run: flutter pub get
+        working-directory: apps/pos
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "11"
+
+      - name: Build APK
+        run: flutter build apk --release
+        working-directory: apps/pos
+
+      - name: Upload APK
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: D:\a\fluttertools\fluttertools\sidekick\build\app\outputs\flutter-apk\app-release.apk
+          asset_name: app-release.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Build Flutter for Windows
+        run: flutter build windows --release
+        working-directory: apps/pos
+
+      - name: Install Inno Setup
+        run: choco install innosetup
+
+      - name: Replace version in Inno Setup script
+        run: fluttertools/sidekick/installer/update_inno_version.ps1
+
+      - name: Create Installer using Inno Setup
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "fluttertools/sidekick/installer/inno_script.iss"'
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: D:\a\fluttertools\fluttertools\sidekick\installer\installer\mysetup.exe
+          asset_name: mysetup.exe
+          asset_content_type: application/x-msdownload
