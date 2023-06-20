@@ -8,6 +8,7 @@ Updat is a simple-to-use reliable flutter-native updater that handles your appli
   <a href="https://github.com/aguilaair/updat/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aguilaair/updat?color=orange&style=flat-square"></a>
   <a href="https://pub.dev/packages/updat"><img alt="Pub.dev" src="https://img.shields.io/pub/v/updat.svg?label=Pub.dev&color=blue&style=flat-square"></a>
   <a href="https://github.com/aguilaair/updat/issues"><img alt="Github Issues" src="https://img.shields.io/github/issues/aguilaair/updat?label=Issues&color=green&style=flat-square"></a>
+  <a href="https://github.com/aguilaair/updat/wiki"><img alt="Github Wiki" src="https://img.shields.io/badge/GitHub-Wiki-black"></a>
  </div>
 
 ## Demo
@@ -93,7 +94,7 @@ To change the theme simply add the desired theme to the builder and you're set.
 
 ### Advanced Usage  
 If you need to send additional HTTP headers when downloading a release asset, you may define your
-headers by setting the `downloadReleaseHeaders` property of `UpdatGlobalOptions`.
+headers by setting the `downloadReleaseHeaders` property of `UpdatGlobalOptions`, you should probably do this in the main function of your code.
 ```dart
 UpdatGlobalOptions.downloadReleaseHeaders = {
   "Authorization": "Bearer gh_pat_1234567889abcdefghijklm",
