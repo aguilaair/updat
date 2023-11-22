@@ -26,9 +26,9 @@ class UpdatWindowManager extends StatefulWidget {
     this.openOnDownload = false,
     this.closeOnInstall = false,
     this.launchOnExit = true,
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   ///  This function will be invoked to ckeck if there is a new version available. The return string must be a semantic version.
   final Future<String?> Function() getLatestVersion;

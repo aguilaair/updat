@@ -31,8 +31,7 @@ class MyApp extends StatelessWidget {
               primaryColor: const Color(0xff1890ff),
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            darkTheme: ThemeData.dark()
-                .copyWith(primaryColor: Colors.blue, useMaterial3: true),
+            darkTheme: ThemeData.dark().copyWith(primaryColor: Colors.blue),
             themeMode: themeMode,
             home: const MyHomePage(),
           );

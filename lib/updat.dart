@@ -23,8 +23,8 @@ class UpdatWidget extends StatefulWidget {
     this.callback,
     this.openOnDownload = true,
     this.closeOnInstall = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   ///  This function will be invoked to ckeck if there is a new version available. The return string must be a semantic version.
   final Future<String?> Function() getLatestVersion;
