@@ -1,6 +1,6 @@
 # Updat - The simple-to-use, flutter-based desktop update package
 
-![Logo](https://github.com/aguilaair/updat/blob/main/promo/banner.svg)
+![Logo](https://github.com/aguilaair/updat/assets/17295513/b7a60ca6-bc87-4abc-82fa-cf327ef73504)
 
 Updat is a simple-to-use reliable flutter-native updater that handles your application's updates. All you need is a place to host your files and a place to check for the latest version.
 
@@ -13,7 +13,7 @@ Updat is a simple-to-use reliable flutter-native updater that handles your appli
 
 ## Demo
 
-![demo](https://github.com/aguilaair/updat/blob/main/promo/demo.gif)
+![demo](https://github.com/aguilaair/updat/assets/17295513/9e0be181-0772-4cf9-8c4e-8933b407137f)
 
 ## Installing
 
@@ -69,7 +69,7 @@ Want to learn how to integrate Updat in your app?
 
 ### Theming
 
-![Logo](https://github.com/aguilaair/updat/blob/main/promo/banner-2.svg)
+![Logo](https://github.com/aguilaair/updat/assets/17295513/05cbe14b-e240-4fe1-95cd-c10fdd51b665)
 
 Updat is extremely easy to theme. We also use `updateChipBuilder` and `updateDialogBuilder` internally to design our widgets, so you have the same customizability we do. We provide a couple of themes to get you started.
 
