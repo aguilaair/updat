@@ -1,3 +1,8 @@
+## 1.3.2
+
+* Fix images not displaying on pub.dev
+* Update dependencies
+
 ## 1.3.1
 
 * Add support for `updatWindowManager` to mobile platforms and web. (Just bypasses the updat system)
