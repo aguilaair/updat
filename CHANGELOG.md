@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Update dependencies
+
 ## 1.3.2
 
 * Fix images not displaying on pub.dev
