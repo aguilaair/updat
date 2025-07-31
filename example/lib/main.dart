@@ -15,7 +15,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -180,8 +180,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                               return Colors
                                   .white; // Use the component's default.
                             },
@@ -236,8 +236,7 @@ class ThemeModeManager extends StatefulWidget {
   final Widget Function(ThemeMode? themeMode)? builder;
   final ThemeMode? defaultThemeMode;
 
-  const ThemeModeManager({Key? key, this.builder, this.defaultThemeMode})
-      : super(key: key);
+  const ThemeModeManager({super.key, this.builder, this.defaultThemeMode});
 
   @override
   State<ThemeModeManager> createState() =>
