@@ -4,6 +4,8 @@
 * Add `handleWindowClose` and `onBeforeClose` to `UpdatWindowManager` for custom close handling
 * Add `UpdatTranslations` for localizing default UI strings (<https://github.com/aguilaair/updat/issues/30>)
 * Add `UpdatController` for programmatic update re-checks
+* Refactor chip themes to shared helpers and add `UpdatChipBuilder` / `UpdatDialogBuilder` typedefs
+* Add `UpdatException` and harden zip/installer file handling
 * Update dependencies and raise minimum SDK to Dart 3.8 / Flutter 3.27
 
 ## 1.4.0

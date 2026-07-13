@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/updat_translations_scope.dart';
 import '../../updat.dart';
+import 'chip_common.dart';
 
 Widget floatingExtendedChipWithSilentDownload({
   required BuildContext context,
@@ -16,10 +17,7 @@ Widget floatingExtendedChipWithSilentDownload({
 }) {
   final t = UpdatTranslationsScope.of(context);
 
-  if (UpdatStatus.available == status ||
-      UpdatStatus.availableWithChangelog == status) {
-    startUpdate();
-  }
+  maybeStartSilentDownload(status, startUpdate);
 
   if (UpdatStatus.readyToInstall == status) {
     return Card(

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
-import 'package:updat/l10n/updat_translations.dart';
 import 'package:updat/l10n/updat_translations_scope.dart';
 import 'package:updat/theme/chips/floating_with_silent_download.dart';
 import 'package:updat/updat.dart';
@@ -36,7 +35,7 @@ class UpdatWindowManager extends StatefulWidget {
     required this.child,
   });
 
-  ///  This function will be invoked to ckeck if there is a new version available. The return string must be a semantic version.
+  ///  This function will be invoked to check if there is a new version available. The return string must be a semantic version.
   final Future<String?> Function() getLatestVersion;
 
   ///  This function will be invoked if there is a new release to get the changes.
@@ -54,31 +53,10 @@ class UpdatWindowManager extends StatefulWidget {
   final UpdatController? controller;
 
   /// This Function can be used to override the default chip shown when there is a new version available.
-  final Widget Function({
-    required BuildContext context,
-    required String? latestVersion,
-    required String appVersion,
-    required UpdatStatus status,
-    required void Function() checkForUpdate,
-    required void Function() openDialog,
-    required void Function() startUpdate,
-    required Future<void> Function() launchInstaller,
-    required void Function() dismissUpdate,
-  })? updateChipBuilder;
+  final UpdatChipBuilder? updateChipBuilder;
 
   /// This Function can be used to override the default dialog shown when there is a new version available. You must call `showDialog` yourself.
-  final void Function({
-    required BuildContext context,
-    required String? latestVersion,
-    required String appVersion,
-    required UpdatStatus status,
-    required String? changelog,
-    required void Function() checkForUpdate,
-    required void Function() openDialog,
-    required void Function() startUpdate,
-    required Future<void> Function() launchInstaller,
-    required void Function() dismissUpdate,
-  })? updateDialogBuilder;
+  final UpdatDialogBuilder? updateDialogBuilder;
 
   /// Get the url of the binary file to download provided with a certain version.
   final Future<String> Function(String? latestVersion) getBinaryUrl;

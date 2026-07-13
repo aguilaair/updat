@@ -6,9 +6,14 @@ import 'package:updat/l10n/updat_translations.dart';
 import 'package:updat/l10n/updat_translations_scope.dart';
 import 'package:updat/theme/chips/default.dart';
 import 'package:updat/theme/dialogs/default.dart';
+import 'package:updat/updat_builders.dart';
 import 'package:updat/updat_status.dart';
 import 'package:updat/utils/file_handler.dart';
 
+export 'package:updat/l10n/updat_translations.dart';
+export 'package:updat/updat_builders.dart';
+export 'package:updat/updat_controller.dart';
+export 'package:updat/updat_exception.dart';
 export 'package:updat/updat_status.dart';
 
 /// Imperative API for driving [UpdatWidget] and [UpdatWindowManager] from
@@ -133,31 +138,10 @@ class UpdatWidget extends StatefulWidget {
   final UpdatController? controller;
 
   /// This Function can be used to override the default chip shown when there is a new version available.
-  final Widget Function({
-    required BuildContext context,
-    required String? latestVersion,
-    required String appVersion,
-    required UpdatStatus status,
-    required void Function() checkForUpdate,
-    required void Function() openDialog,
-    required void Function() startUpdate,
-    required Future<void> Function() launchInstaller,
-    required void Function() dismissUpdate,
-  })? updateChipBuilder;
+  final UpdatChipBuilder? updateChipBuilder;
 
   /// This Function can be used to override the default dialog shown when there is a new version available. You must call `showDialog` yourself.
-  final void Function({
-    required BuildContext context,
-    required String? latestVersion,
-    required String appVersion,
-    required UpdatStatus status,
-    required String? changelog,
-    required void Function() checkForUpdate,
-    required void Function() openDialog,
-    required void Function() startUpdate,
-    required Future<void> Function() launchInstaller,
-    required void Function() dismissUpdate,
-  })? updateDialogBuilder;
+  final UpdatDialogBuilder? updateDialogBuilder;
 
   /// Get the url of the binary file to download provided with a certain version.
   final Future<String> Function(String? latestVersion) getBinaryUrl;
