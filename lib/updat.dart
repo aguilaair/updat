@@ -6,10 +6,97 @@ import 'package:updat/l10n/updat_translations.dart';
 import 'package:updat/l10n/updat_translations_scope.dart';
 import 'package:updat/theme/chips/default.dart';
 import 'package:updat/theme/dialogs/default.dart';
+import 'package:updat/updat_status.dart';
 import 'package:updat/utils/file_handler.dart';
 
-/// This widget is the default Updat widget, that will only be shown when a new update is detected (This is checked only once per widget initialization by default).
-/// If you want a custom widget to be shown, you can pass it as the [updateChipBuilder] parameter.
+export 'package:updat/updat_status.dart';
+
+/// Imperative API for driving [UpdatWidget] and [UpdatWindowManager] from
+/// outside the widget tree (e.g. after a backend push or socket event).
+class UpdatController {
+  UpdatStatus? _status;
+  String? _latestVersion;
+
+  Future<void> Function({bool notifyIfAvailable})? _checkForUpdate;
+  void Function()? _openDialog;
+  void Function()? _startUpdate;
+  Future<void> Function()? _launchInstaller;
+  void Function()? _dismissUpdate;
+
+  /// The last known [UpdatStatus], updated whenever the widget state changes.
+  UpdatStatus? get status => _status;
+
+  /// The latest remote version string from the most recent check, if any.
+  String? get latestVersion => _latestVersion;
+
+  /// Re-run the version check.
+  ///
+  /// No-ops while a check or download is already in progress, or when no
+  /// [UpdatWidget] is attached. Set [notifyIfAvailable] to `true` to open the
+  /// update dialog automatically when a newer version is found.
+  Future<void> checkForUpdate({bool notifyIfAvailable = false}) {
+    return _checkForUpdate?.call(notifyIfAvailable: notifyIfAvailable) ??
+        Future.value();
+  }
+
+  /// Open the update dialog for the current check result.
+  void openDialog() => _openDialog?.call();
+
+  /// Begin downloading the available update.
+  void startUpdate() => _startUpdate?.call();
+
+  /// Launch the downloaded installer.
+  Future<void> launchInstaller() async {
+    await _launchInstaller?.call();
+  }
+
+  /// Dismiss the pending update notification.
+  void dismissUpdate() => _dismissUpdate?.call();
+
+  void _attach({
+    required Future<void> Function({bool notifyIfAvailable}) checkForUpdate,
+    required void Function() openDialog,
+    required void Function() startUpdate,
+    required Future<void> Function() launchInstaller,
+    required void Function() dismissUpdate,
+    required UpdatStatus status,
+    required String? latestVersion,
+  }) {
+    _checkForUpdate = checkForUpdate;
+    _openDialog = openDialog;
+    _startUpdate = startUpdate;
+    _launchInstaller = launchInstaller;
+    _dismissUpdate = dismissUpdate;
+    _status = status;
+    _latestVersion = latestVersion;
+  }
+
+  void _detach({
+    required Future<void> Function({bool notifyIfAvailable}) checkForUpdate,
+  }) {
+    if (_checkForUpdate == checkForUpdate) {
+      _checkForUpdate = null;
+      _openDialog = null;
+      _startUpdate = null;
+      _launchInstaller = null;
+      _dismissUpdate = null;
+    }
+  }
+
+  void _sync({
+    required UpdatStatus status,
+    required String? latestVersion,
+  }) {
+    _status = status;
+    _latestVersion = latestVersion;
+  }
+}
+
+/// This widget is the default Updat widget, that will only be shown when a new
+/// update is detected. An initial check runs on mount; use [controller] to
+/// trigger additional checks later.
+/// If you want a custom widget to be shown, you can pass it as the
+/// [updateChipBuilder] parameter.
 class UpdatWidget extends StatefulWidget {
   const UpdatWidget({
     required this.currentVersion,
@@ -24,10 +111,11 @@ class UpdatWidget extends StatefulWidget {
     this.openOnDownload = true,
     this.closeOnInstall = false,
     this.translations,
+    this.controller,
     super.key,
   });
 
-  ///  This function will be invoked to ckeck if there is a new version available. The return string must be a semantic version.
+  ///  This function will be invoked to check if there is a new version available. The return string must be a semantic version.
   final Future<String?> Function() getLatestVersion;
 
   ///  This function will be invoked if there is a new release to get the changes.
@@ -40,6 +128,9 @@ class UpdatWidget extends StatefulWidget {
   final String currentVersion;
 
   final void Function(UpdatStatus status)? callback;
+
+  /// Optional controller for programmatic access to update actions.
+  final UpdatController? controller;
 
   /// This Function can be used to override the default chip shown when there is a new version available.
   final Widget Function({
@@ -93,7 +184,6 @@ class UpdatWidget extends StatefulWidget {
 
 class _UpdatWidgetState extends State<UpdatWidget> {
   UpdatStatus status = UpdatStatus.idle;
-  UpdatStatus? lastStatus;
   Version? latestVersion;
   late Version appVersion;
   String? changelog;
@@ -102,30 +192,48 @@ class _UpdatWidgetState extends State<UpdatWidget> {
 
   @override
   void initState() {
-    appVersion = Version.parse(widget.currentVersion);
-    updateValues();
     super.initState();
+    appVersion = Version.parse(widget.currentVersion);
+    _attachController();
+    _checkForUpdate();
+  }
+
+  @override
+  void didUpdateWidget(covariant UpdatWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(checkForUpdate: _checkForUpdate);
+      _attachController();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?._detach(checkForUpdate: _checkForUpdate);
+    super.dispose();
+  }
+
+  void _attachController() {
+    widget.controller?._attach(
+      checkForUpdate: _checkForUpdate,
+      openDialog: openDialog,
+      startUpdate: startUpdate,
+      launchInstaller: launchInstaller,
+      dismissUpdate: dismiss,
+      status: status,
+      latestVersion: latestVersion?.toString(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Check for update if we're not checking already and [checkAggresively] is set to `true`.
-    if (status == UpdatStatus.idle) {
-      updateValues();
-    }
-
-    if (status != lastStatus) {
-      lastStatus = status;
-      widget.callback?.call(status);
-    }
-
     Widget buildContent(BuildContext scopedContext) {
       if (widget.updateChipBuilder != null) {
         return widget.updateChipBuilder!(
           context: scopedContext,
           latestVersion: latestVersion?.toString(),
           appVersion: widget.currentVersion,
-          checkForUpdate: updateValues,
+          checkForUpdate: () => _checkForUpdate(),
           openDialog: openDialog,
           status: status,
           startUpdate: startUpdate,
@@ -138,7 +246,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         context: scopedContext,
         latestVersion: latestVersion?.toString(),
         appVersion: widget.currentVersion,
-        checkForUpdate: updateValues,
+        checkForUpdate: () => _checkForUpdate(),
         openDialog: openDialog,
         status: status,
         startUpdate: startUpdate,
@@ -164,45 +272,69 @@ class _UpdatWidgetState extends State<UpdatWidget> {
 
   BuildContext get _uiContext => _translationsContext ?? context;
 
-  void updateValues() {
+  void _setStatus(UpdatStatus newStatus) {
+    if (status == newStatus) return;
     setState(() {
-      status = UpdatStatus.checking;
+      status = newStatus;
     });
-    widget.getLatestVersion().then((latestVersion) {
-      if (latestVersion != null && mounted) {
-        setState(() {
-          this.latestVersion = Version.parse(latestVersion);
-          if (this.latestVersion! > appVersion) {
-            if (widget.getChangelog != null) {
-              widget.getChangelog!(latestVersion, widget.currentVersion).then((changelogRec) {
-                if (changelogRec != null && mounted) {
-                  setState(() {
-                    status = UpdatStatus.availableWithChangelog;
-                    changelog = changelogRec;
-                  });
-                }
-              }).catchError((_) {
-                return;
-              });
+    widget.controller?._sync(
+      status: status,
+      latestVersion: latestVersion?.toString(),
+    );
+    widget.callback?.call(status);
+  }
+
+  Future<void> _checkForUpdate({bool notifyIfAvailable = false}) async {
+    if (status == UpdatStatus.checking || status == UpdatStatus.downloading) {
+      return;
+    }
+
+    _setStatus(UpdatStatus.checking);
+    changelog = null;
+
+    try {
+      final latestVersionStr = await widget.getLatestVersion();
+      if (!mounted) return;
+
+      if (latestVersionStr == null) {
+        _setStatus(UpdatStatus.error);
+        return;
+      }
+
+      latestVersion = Version.parse(latestVersionStr);
+
+      if (latestVersion! > appVersion) {
+        if (widget.getChangelog != null) {
+          try {
+            final changelogRec = await widget.getChangelog!(
+              latestVersionStr,
+              widget.currentVersion,
+            );
+            if (!mounted) return;
+            if (changelogRec != null) {
+              changelog = changelogRec;
+              _setStatus(UpdatStatus.availableWithChangelog);
             } else {
-              setState(() {
-                status = UpdatStatus.available;
-              });
+              _setStatus(UpdatStatus.available);
             }
-          } else {
-            setState(() {
-              status = UpdatStatus.upToDate;
-            });
+          } catch (_) {
+            if (!mounted) return;
+            _setStatus(UpdatStatus.available);
           }
-        });
+        } else {
+          _setStatus(UpdatStatus.available);
+        }
+
+        if (notifyIfAvailable) {
+          openDialog();
+        }
+      } else {
+        _setStatus(UpdatStatus.upToDate);
       }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          status = UpdatStatus.error;
-        });
-      }
-    });
+    } catch (_) {
+      if (!mounted) return;
+      _setStatus(UpdatStatus.error);
+    }
   }
 
   void openDialog() {
@@ -212,7 +344,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         latestVersion: latestVersion?.toString(),
         status: status,
         changelog: changelog,
-        checkForUpdate: updateValues,
+        checkForUpdate: () => _checkForUpdate(),
         openDialog: openDialog,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
@@ -225,7 +357,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         latestVersion: latestVersion?.toString(),
         status: status,
         changelog: changelog,
-        checkForUpdate: updateValues,
+        checkForUpdate: () => _checkForUpdate(),
         openDialog: openDialog,
         startUpdate: startUpdate,
         launchInstaller: launchInstaller,
@@ -236,27 +368,23 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   }
 
   void dismiss() {
-    setState(() {
-      status = UpdatStatus.dismissed;
-    });
+    _setStatus(UpdatStatus.dismissed);
   }
 
   void startUpdate() async {
-    if (status != UpdatStatus.available && status != UpdatStatus.availableWithChangelog) {
+    if (status != UpdatStatus.available &&
+        status != UpdatStatus.availableWithChangelog) {
       if (status == UpdatStatus.readyToInstall) {
         launchInstaller();
       }
       return;
     }
-    setState(() {
-      status = UpdatStatus.downloading;
-    });
-    // Get the URL to download the file from.
+    _setStatus(UpdatStatus.downloading);
     final url = await widget.getBinaryUrl(latestVersion!.toString());
 
-    // Get the file location to download the file to.
     if (widget.getDownloadFileLocation != null) {
-      installerFile = await widget.getDownloadFileLocation!(latestVersion!.toString());
+      installerFile =
+          await widget.getDownloadFileLocation!(latestVersion!.toString());
     } else {
       installerFile = await getDownloadFileLocation(
         latestVersion!.toString(),
@@ -266,49 +394,29 @@ class _UpdatWidgetState extends State<UpdatWidget> {
     }
 
     if (installerFile != null) {
-      // Download the file.
-
       try {
         await downloadRelease(installerFile!, url, widget.appName);
       } catch (e) {
-        setState(() {
-          status = UpdatStatus.error;
-        });
+        _setStatus(UpdatStatus.error);
         return;
       }
 
-      setState(() {
-        status = UpdatStatus.readyToInstall;
-      });
+      _setStatus(UpdatStatus.readyToInstall);
 
       if (widget.openOnDownload) launchInstaller();
     }
   }
 
   Future<void> launchInstaller() async {
-    if (status != UpdatStatus.readyToInstall && status != UpdatStatus.dismissed) {
+    if (status != UpdatStatus.readyToInstall &&
+        status != UpdatStatus.dismissed) {
       return;
     }
-    // Open the file.
     try {
       await openInstaller(installerFile!, widget.appName);
       if (widget.closeOnInstall) exit(0);
     } catch (e) {
-      setState(() {
-        status = UpdatStatus.error;
-      });
+      _setStatus(UpdatStatus.error);
     }
   }
-}
-
-enum UpdatStatus {
-  available,
-  availableWithChangelog,
-  checking,
-  upToDate,
-  error,
-  idle,
-  downloading,
-  readyToInstall,
-  dismissed,
 }

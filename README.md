@@ -61,6 +61,7 @@ Want to learn how to integrate Updat in your app?
 | **`appNme`**                  | `String`                     | **Required**. The Application's name. It is used to name the binaries when downloading.                              | N/A     |
 | **`getChangelog`**            | `Future<String>`             | This will render a plain text view of the changelog.                                                                 | N/A     |
 | **`callback`**                | `void Function(UpdatStatus)` | A callback that is called when the UpdatStatus gets updated.                                                         | N/A     |
+| **`controller`**              | `UpdatController`            | Optional controller for programmatic update checks and actions.                                                        | N/A     |
 | **`getDownloadFileLocation`** | `Future<File>`               | Choose where to download the update.                                                                                 | N/A     |
 | **`updateChipBuilder`**       | `Widget Function(...)`       | Overrides the default update chip.                                                                                   | N/A     |
 | **`updateDialogBuilder`**     | `Widget Function(...)`       | Overrides the default update dialog.                                                                                 | N/A     |
@@ -92,7 +93,25 @@ To change the theme simply add the desired theme to the builder and you're set.
 
 - `defaultDialog` which is the default, M2 and M3 dialog that shows by default.
 
-### Advanced Usage  
+### Programmatic update checks
+
+Use an [UpdatController](lib/updat_controller.dart) to re-check for updates after the initial check completes — for example when your backend signals a new release via push notification or websocket:
+
+```dart
+final updatController = UpdatController();
+
+UpdatWindowManager(
+  controller: updatController,
+  // ...
+)
+
+// Later, when your backend alerts the user:
+await updatController.checkForUpdate(notifyIfAvailable: true);
+```
+
+The `*WithCheckFor` chip themes also expose a UI button to recheck manually.
+
+### Advanced Usage
 If you need to send additional HTTP headers when downloading a release asset, you may define your
 headers by setting the `downloadReleaseHeaders` property of `UpdatGlobalOptions`, you should probably do this in the main function of your code.
 ```dart

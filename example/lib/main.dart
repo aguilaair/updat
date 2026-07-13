@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:updat/l10n/updat_translations.dart';
+import 'package:updat/updat.dart';
 import 'package:updat/updat_window_manager.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -53,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var show = true;
   var elevated = false;
   UpdatTranslations translations = UpdatTranslations.english;
+  final UpdatController _updatController = UpdatController();
 
   TextEditingController titleController =
       TextEditingController(text: "Update Available");
@@ -81,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return UpdatWindowManager(
+      controller: _updatController,
       translations: translations,
       getLatestVersion: () async {
         // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
@@ -210,6 +213,34 @@ class _MyHomePageState extends State<MyHomePage> {
                         translations = value;
                       });
                     },
+                  ),
+                  const SizedBox(height: 20),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Backend update alert',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Simulate your backend notifying the app that a new '
+                            'version is available after the initial check.',
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: () => _updatController.checkForUpdate(
+                              notifyIfAvailable: true,
+                            ),
+                            icon: const Icon(Icons.notifications_active_outlined),
+                            label: const Text('Simulate backend update alert'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Wrap(
