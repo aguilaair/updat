@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/updat_translations_scope.dart';
 import '../../updat.dart';
 
 Widget defaultChipWithCheckFor({
@@ -13,21 +14,23 @@ Widget defaultChipWithCheckFor({
   required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
+  final t = UpdatTranslationsScope.of(context);
+
   if (UpdatStatus.available == status ||
       UpdatStatus.availableWithChangelog == status) {
     return Tooltip(
-      message: 'Update to version ${latestVersion!.toString()}',
+      message: t.updateToVersion(latestVersion!.toString()),
       child: ElevatedButton.icon(
         onPressed: openDialog,
         icon: const Icon(Icons.system_update_alt_rounded),
-        label: const Text('Update available'),
+        label: Text(t.updateAvailable),
       ),
     );
   }
 
   if (UpdatStatus.downloading == status) {
     return Tooltip(
-      message: 'Please Wait...',
+      message: t.pleaseWait,
       child: ElevatedButton.icon(
         onPressed: () {},
         icon: const SizedBox(
@@ -37,58 +40,58 @@ Widget defaultChipWithCheckFor({
             strokeWidth: 2,
           ),
         ),
-        label: const Text('Downloading...'),
+        label: Text(t.downloading),
       ),
     );
   }
 
   if (UpdatStatus.readyToInstall == status) {
     return Tooltip(
-      message: 'Click to Install',
+      message: t.clickToInstall,
       child: ElevatedButton.icon(
         onPressed: launchInstaller,
         icon: const Icon(Icons.check_circle),
-        label: const Text('Ready to install'),
+        label: Text(t.readyToInstall),
       ),
     );
   }
 
   if (UpdatStatus.error == status) {
     return Tooltip(
-      message: 'There was an issue with the update. Please try again.',
+      message: t.updateErrorTooltip,
       child: ElevatedButton.icon(
         onPressed: startUpdate,
         icon: const Icon(Icons.warning),
-        label: const Text('Error. Try Again.'),
+        label: Text(t.errorTryAgain),
       ),
     );
   }
 
   if (UpdatStatus.idle == status) {
     return Tooltip(
-      message: 'Click to check for updates',
+      message: t.clickToCheckForUpdates,
       child: ElevatedButton.icon(
         onPressed: checkForUpdate,
         icon: const Icon(Icons.refresh_rounded),
-        label: const Text('Check for Updates'),
+        label: Text(t.checkForUpdates),
       ),
     );
   }
 
   if (UpdatStatus.upToDate == status) {
     return Tooltip(
-      message: 'Click to check for updates',
+      message: t.clickToCheckForUpdates,
       child: ElevatedButton.icon(
         onPressed: checkForUpdate,
         icon: const Icon(Icons.check_circle),
-        label: const Text('Up to date'),
+        label: Text(t.upToDate),
       ),
     );
   }
 
   if (UpdatStatus.checking == status) {
     return Tooltip(
-      message: 'Please Wait...',
+      message: t.pleaseWait,
       child: ElevatedButton.icon(
         onPressed: () {},
         icon: const SizedBox(
@@ -98,7 +101,7 @@ Widget defaultChipWithCheckFor({
             strokeWidth: 2,
           ),
         ),
-        label: const Text('Checking for Updates...'),
+        label: Text(t.checkingForUpdates),
       ),
     );
   }

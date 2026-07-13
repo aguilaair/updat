@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
+import 'package:updat/l10n/updat_translations.dart';
+import 'package:updat/l10n/updat_translations_scope.dart';
 import 'package:updat/theme/chips/floating_with_silent_download.dart';
 import 'package:updat/updat.dart';
 import 'package:window_manager/window_manager.dart';
@@ -26,6 +28,9 @@ class UpdatWindowManager extends StatefulWidget {
     this.openOnDownload = false,
     this.closeOnInstall = false,
     this.launchOnExit = true,
+    this.handleWindowClose = true,
+    this.onBeforeClose,
+    this.translations,
     super.key,
     required this.child,
   });
@@ -89,6 +94,21 @@ class UpdatWindowManager extends StatefulWidget {
   /// If true, the installer will be launched when the app is closed.
   final bool launchOnExit;
 
+  /// If false, [UpdatWindowManager] will not register a [WindowListener] or
+  /// intercept the native close signal. Use this when you handle window close
+  /// yourself via `window_manager`.
+  final bool handleWindowClose;
+
+  /// Optional callback invoked before closing the window. Return `true` to
+  /// proceed with closing (and launching the installer when [launchOnExit] is
+  /// true), or `false` to cancel. When not provided and other
+  /// [WindowListener]s are registered, the close event is deferred to them.
+  final Future<bool> Function()? onBeforeClose;
+
+  /// Optional translations for the default UI widgets. When omitted, uses
+  /// [UpdatGlobalOptions.translations].
+  final UpdatTranslations? translations;
+
   @override
   State<UpdatWindowManager> createState() => _UpdatWindowManagerState();
 }
@@ -99,8 +119,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
   @override
   void initState() {
-    // Check if the app is running on Web
-    if (shouldRun) {
+    if (shouldRun && widget.handleWindowClose) {
       windowManager.addListener(this);
       _init();
     }
@@ -110,14 +129,13 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
 
   @override
   void dispose() {
-    if (shouldRun) {
+    if (shouldRun && widget.handleWindowClose) {
       windowManager.removeListener(this);
     }
     super.dispose();
   }
 
   void _init() async {
-    // Add this line to override the default close handler
     await windowManager.setPreventClose(true);
     setState(() {});
   }
@@ -132,7 +150,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    final content = Stack(
       children: [
         Positioned.fill(child: widget.child),
         Positioned(
@@ -157,17 +175,36 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
         )
       ],
     );
+
+    if (widget.translations == null) {
+      return content;
+    }
+
+    return UpdatTranslationsScope(
+      translations: widget.translations!,
+      child: content,
+    );
   }
 
   @override
   void onWindowClose() async {
-    if (widget.launchOnExit) {
-      await windowManager.isPreventClose();
-      await launchInstaller?.call();
-      await windowManager.destroy();
-    } else {
-      await windowManager.destroy();
+    if (!widget.handleWindowClose) return;
+
+    if (widget.onBeforeClose != null) {
+      final shouldClose = await widget.onBeforeClose!();
+      if (!shouldClose) return;
+    } else if (await windowManager.isPreventClose() &&
+        windowManager.listeners.length > 1) {
+      // Another WindowListener (e.g. a close-confirmation dialog) should
+      // handle this close attempt.
+      return;
     }
+
+    if (widget.launchOnExit) {
+      await launchInstaller?.call();
+    }
+    await windowManager.setPreventClose(false);
+    await windowManager.destroy();
   }
 
   Widget mobileBypass({

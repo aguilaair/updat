@@ -1,3 +1,5 @@
+import 'package:updat/l10n/updat_translations.dart';
+
 /// Used to define options that can be accessed globally by Updat.
 /// Properties are static, so there is no need to instantiate this.
 class UpdatGlobalOptions {
@@ -11,4 +13,7 @@ class UpdatGlobalOptions {
   /// };
   /// ```
   static Map<String, String> downloadReleaseHeaders = {};
+
+  /// Default strings used by the built-in Updat UI widgets.
+  static UpdatTranslations translations = UpdatTranslations.english;
 }

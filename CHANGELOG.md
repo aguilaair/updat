@@ -1,3 +1,10 @@
+## 1.4.1
+
+* Fix `UpdatWindowManager` ignoring `preventClose` from `window_manager` (<https://github.com/aguilaair/updat/issues/31>)
+* Add `handleWindowClose` and `onBeforeClose` to `UpdatWindowManager` for custom close handling
+* Add `UpdatTranslations` for localizing default UI strings (<https://github.com/aguilaair/updat/issues/30>)
+* Update dependencies and raise minimum SDK to Dart 3.8 / Flutter 3.27
+
 ## 1.4.0
 
 * Update dependencies

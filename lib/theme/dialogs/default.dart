@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/updat_translations_scope.dart';
 import '../../updat.dart';
 
 void defaultDialog({
@@ -14,6 +15,8 @@ void defaultDialog({
   required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
+  final t = UpdatTranslationsScope.of(context);
+
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -21,22 +24,22 @@ void defaultDialog({
       title: Flex(
         direction:
             Theme.of(context).useMaterial3 ? Axis.vertical : Axis.horizontal,
-        children: const [
-          Icon(Icons.update),
-          Text('Update available'),
+        children: [
+          const Icon(Icons.update),
+          Text(t.updateAvailable),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('A new version of the app is available.'),
+          Text(t.newVersionAvailable),
           const SizedBox(width: 10),
-          Text('New Version: ${latestVersion!.toString()}'),
+          Text(t.newVersionLabel(latestVersion!.toString())),
           const SizedBox(height: 10),
           if (status == UpdatStatus.availableWithChangelog) ...[
             Text(
-              'Changelog:',
+              t.changelog,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -50,7 +53,7 @@ void defaultDialog({
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Later'),
+          child: Text(t.later),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -60,7 +63,7 @@ void defaultDialog({
             Navigator.pop(context);
             startUpdate();
           },
-          child: const Text('Update Now'),
+          child: Text(t.updateNow),
         ),
       ],
     ),
