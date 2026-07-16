@@ -124,7 +124,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
   late final UpdatController _controller = UpdatController();
 
   UpdatController get effectiveController => widget.controller ?? _controller;
-
+  bool _managedPreventClose = false;
   @override
   void initState() {
     if (shouldRun && widget.handleWindowClose) {
@@ -144,6 +144,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
   }
 
   void _init() async {
+    _managedPreventClose = !(await windowManager.isPreventClose());
     await windowManager.setPreventClose(true);
     setState(() {});
   }
@@ -193,6 +194,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
       final shouldClose = await widget.onBeforeClose!();
       if (!shouldClose) return;
     } else if (await windowManager.isPreventClose() &&
+        !_managedPreventClose &&
         windowManager.listeners.length > 1) {
       return;
     }

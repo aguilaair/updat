@@ -256,6 +256,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
     }
 
     if (widget.translations == null) {
+      _translationsContext = null;
       return buildContent(context);
     }
 
