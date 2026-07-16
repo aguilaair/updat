@@ -121,11 +121,9 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     with WindowListener {
   final shouldRun =
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
-  late final UpdatController _controller =
-      widget.controller ?? UpdatController();
+  late final UpdatController _controller = UpdatController();
 
-  UpdatController get effectiveController =>
-      widget.controller ?? _controller;
+  UpdatController get effectiveController => widget.controller ?? _controller;
 
   @override
   void initState() {
