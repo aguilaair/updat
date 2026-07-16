@@ -12,27 +12,30 @@ import 'package:updat/utils/open_link.dart';
 bool isZipArchive(String path) => p.extension(path).toLowerCase() == '.zip';
 
 File findInstallerInDirectory(Directory directory) {
-  final entries = directory.listSync();
-  if (entries.isEmpty) {
+  if (!directory.existsSync()) {
+    throw UpdatException('Installer directory does not exist: ${directory.path}');
+  }
+
+  final files = directory
+      .listSync(recursive: true, followLinks: false)
+      .whereType<File>()
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+
+  if (files.isEmpty) {
     throw UpdatException('No installer found in ${directory.path}');
   }
 
   if (Platform.isWindows) {
-    for (final entry in entries) {
-      if (entry is File && p.extension(entry.path).toLowerCase() == '.exe') {
-        return entry;
+    for (final file in files) {
+      if (p.extension(file.path).toLowerCase() == '.exe') {
+        return file;
       }
     }
     throw UpdatException('No Windows installer (.exe) found in ${directory.path}');
   }
 
-  for (final entry in entries) {
-    if (entry is File) {
-      return entry;
-    }
-  }
-
-  throw UpdatException('No installer file found in ${directory.path}');
+  return files.first;
 }
 
 Future<File> getDownloadFileLocation(
