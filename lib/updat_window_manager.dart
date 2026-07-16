@@ -31,6 +31,7 @@ class UpdatWindowManager extends StatefulWidget {
     this.handleWindowClose = true,
     this.onBeforeClose,
     this.translations,
+    this.controller,
     super.key,
     required this.child,
   });
@@ -48,6 +49,9 @@ class UpdatWindowManager extends StatefulWidget {
   final String currentVersion;
 
   final void Function(UpdatStatus status)? callback;
+
+  /// Optional controller for programmatic access to update actions.
+  final UpdatController? controller;
 
   /// This Function can be used to override the default chip shown when there is a new version available.
   final Widget Function({
@@ -117,6 +121,9 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     with WindowListener {
   final shouldRun =
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
+  late final UpdatController _controller = UpdatController();
+
+  UpdatController get effectiveController => widget.controller ?? _controller;
   bool _managedPreventClose = false;
   @override
   void initState() {
@@ -142,14 +149,6 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     setState(() {});
   }
 
-  UpdatStatus status = UpdatStatus.idle;
-
-  void Function()? checkForUpdate;
-  void Function()? openDialog;
-  void Function()? startUpdate;
-  Future<void> Function()? launchInstaller;
-  void Function()? dismissUpdate;
-
   @override
   Widget build(BuildContext context) {
     final content = Stack(
@@ -159,7 +158,9 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
           right: 10,
           bottom: 10,
           child: UpdatWidget(
-            updateChipBuilder: shouldRun ? passthroughChip : mobileBypass,
+            controller: effectiveController,
+            updateChipBuilder:
+                shouldRun ? _buildUpdateChip : _mobileBypass,
             updateDialogBuilder: widget.updateDialogBuilder,
             appName: widget.appName,
             currentVersion: widget.currentVersion,
@@ -169,10 +170,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
             getChangelog: widget.getChangelog,
             openOnDownload: widget.openOnDownload,
             closeOnInstall: widget.closeOnInstall,
-            callback: (status) {
-              widget.callback?.call(status);
-              this.status = status;
-            },
+            callback: widget.callback,
           ),
         )
       ],
@@ -198,19 +196,17 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     } else if (await windowManager.isPreventClose() &&
         !_managedPreventClose &&
         windowManager.listeners.length > 1) {
-      // Another WindowListener (e.g. a close-confirmation dialog) should
-      // handle this close attempt.
       return;
     }
 
     if (widget.launchOnExit) {
-      await launchInstaller?.call();
+      await effectiveController.launchInstaller();
     }
     await windowManager.setPreventClose(false);
     await windowManager.destroy();
   }
 
-  Widget mobileBypass({
+  Widget _mobileBypass({
     required BuildContext context,
     required String? latestVersion,
     required String appVersion,
@@ -224,7 +220,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     return Container();
   }
 
-  Widget passthroughChip({
+  Widget _buildUpdateChip({
     required BuildContext context,
     required String? latestVersion,
     required String appVersion,
@@ -235,12 +231,6 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     required Future<void> Function() launchInstaller,
     required void Function() dismissUpdate,
   }) {
-    this.startUpdate = startUpdate;
-    this.launchInstaller = launchInstaller;
-    this.dismissUpdate = dismissUpdate;
-    this.checkForUpdate = checkForUpdate;
-    this.openDialog = openDialog;
-
     return widget.updateChipBuilder?.call(
           context: context,
           latestVersion: latestVersion,
