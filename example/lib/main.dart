@@ -5,10 +5,13 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:updat/l10n/updat_translations.dart';
 import 'package:updat/updat_window_manager.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:updat/theme/chips/floating_with_silent_download.dart';
+
+import 'multilingual_example_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,6 +52,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var show = true;
   var elevated = false;
+  UpdatTranslations translations = UpdatTranslations.english;
 
   TextEditingController titleController =
       TextEditingController(text: "Update Available");
@@ -77,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return UpdatWindowManager(
+      translations: translations,
       getLatestVersion: () async {
         // Github gives us a super useful latest endpoint, and we can use it to get the latest stable release
         final data = await http.get(Uri.parse(
@@ -94,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return "https://github.com/fluttertools/sidekick/releases/download/$version/sidekick-${Platform.operatingSystem}-$version.$platformExt";
       },
       appName: "Updat Example", // This is used to name the downloaded files.
-      getChangelog: (_, __) async {
+      getChangelog: (_, _) async {
         // That same latest endpoint gives us access to a markdown-flavored release body. Perfect!
         final data = await http.get(Uri.parse(
           "https://api.github.com/repos/fluttertools/sidekick/releases/latest",
@@ -123,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return "https://github.com/fluttertools/sidekick/releases/download/$version/sidekick-${Platform.operatingSystem}-$version.$platformExt";
           },
           appName: "Updat Example", // This is used to name the downloaded files.
-          getChangelog: (_, __) async {
+          getChangelog: (_, _) async {
             // That same latest endpoint gives us access to a markdown-flavored release body. Perfect!
             final data = await http.get(Uri.parse(
               "https://api.github.com/repos/fluttertools/sidekick/releases/latest",
@@ -198,6 +203,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Divider(
                     height: 20,
                   ),
+                  MultilingualExampleCard(
+                    translations: translations,
+                    onTranslationsChanged: (value) {
+                      setState(() {
+                        translations = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   Wrap(
                     spacing: 40,
                     runSpacing: 20,

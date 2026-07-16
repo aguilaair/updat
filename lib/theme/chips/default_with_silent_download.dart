@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/updat_translations_scope.dart';
 import '../../updat.dart';
 
 Widget defaultChipWithSilentDownload({
@@ -13,6 +14,8 @@ Widget defaultChipWithSilentDownload({
   required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
+  final t = UpdatTranslationsScope.of(context);
+
   if (UpdatStatus.available == status ||
       UpdatStatus.availableWithChangelog == status) {
     startUpdate();
@@ -20,11 +23,11 @@ Widget defaultChipWithSilentDownload({
 
   if (UpdatStatus.readyToInstall == status) {
     return Tooltip(
-      message: 'Click to Install',
+      message: t.clickToInstall,
       child: ElevatedButton.icon(
         onPressed: launchInstaller,
         icon: const Icon(Icons.check_circle),
-        label: const Text('Update Ready to install'),
+        label: Text(t.updateReadyToInstall),
       ),
     );
   }

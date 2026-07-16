@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/updat_translations_scope.dart';
 import '../../updat.dart';
 
 Widget floatingExtendedChipWithSilentDownload({
@@ -13,6 +14,8 @@ Widget floatingExtendedChipWithSilentDownload({
   required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
+  final t = UpdatTranslationsScope.of(context);
+
   if (UpdatStatus.available == status ||
       UpdatStatus.availableWithChangelog == status) {
     startUpdate();
@@ -27,22 +30,22 @@ Widget floatingExtendedChipWithSilentDownload({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Update Ready",
+              t.updateReady,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              "Version ${latestVersion.toString()} is now ready to be installed!",
+              t.versionReadyToInstall(latestVersion.toString()),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              "You are currently running version $appVersion.",
+              t.currentlyRunningVersion(appVersion),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              "Update now to get the latest features and fixes.",
+              t.updateNowForFeatures,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 15),
@@ -52,13 +55,13 @@ Widget floatingExtendedChipWithSilentDownload({
               children: [
                 TextButton(
                   onPressed: dismissUpdate,
-                  child: const Text('Later'),
+                  child: Text(t.later),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton.icon(
                   onPressed: startUpdate,
                   icon: const Icon(Icons.install_desktop_rounded),
-                  label: const Text('Install Now'),
+                  label: Text(t.installNow),
                 ),
               ],
             ),

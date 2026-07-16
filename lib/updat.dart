@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:updat/l10n/updat_translations.dart';
+import 'package:updat/l10n/updat_translations_scope.dart';
 import 'package:updat/theme/chips/default.dart';
 import 'package:updat/theme/dialogs/default.dart';
 import 'package:updat/utils/file_handler.dart';
@@ -21,6 +23,7 @@ class UpdatWidget extends StatefulWidget {
     this.callback,
     this.openOnDownload = true,
     this.closeOnInstall = false,
+    this.translations,
     super.key,
   });
 
@@ -80,6 +83,10 @@ class UpdatWidget extends StatefulWidget {
   /// If true, the app will be closed when the installer is launched.
   final bool closeOnInstall;
 
+  /// Optional translations for the default UI widgets. When omitted, uses
+  /// [UpdatGlobalOptions.translations].
+  final UpdatTranslations? translations;
+
   @override
   State<UpdatWidget> createState() => _UpdatWidgetState();
 }
@@ -91,6 +98,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   late Version appVersion;
   String? changelog;
   File? installerFile;
+  BuildContext? _translationsContext;
 
   @override
   void initState() {
@@ -111,22 +119,23 @@ class _UpdatWidgetState extends State<UpdatWidget> {
       widget.callback?.call(status);
     }
 
-    // Override default chip
-    if (widget.updateChipBuilder != null) {
-      return widget.updateChipBuilder!(
-        context: context,
-        latestVersion: latestVersion?.toString(),
-        appVersion: widget.currentVersion,
-        checkForUpdate: updateValues,
-        openDialog: openDialog,
-        status: status,
-        startUpdate: startUpdate,
-        launchInstaller: launchInstaller,
-        dismissUpdate: dismiss,
-      );
-    } else {
+    Widget buildContent(BuildContext scopedContext) {
+      if (widget.updateChipBuilder != null) {
+        return widget.updateChipBuilder!(
+          context: scopedContext,
+          latestVersion: latestVersion?.toString(),
+          appVersion: widget.currentVersion,
+          checkForUpdate: updateValues,
+          openDialog: openDialog,
+          status: status,
+          startUpdate: startUpdate,
+          launchInstaller: launchInstaller,
+          dismissUpdate: dismiss,
+        );
+      }
+
       return defaultChip(
-        context: context,
+        context: scopedContext,
         latestVersion: latestVersion?.toString(),
         appVersion: widget.currentVersion,
         checkForUpdate: updateValues,
@@ -137,7 +146,24 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         dismissUpdate: dismiss,
       );
     }
+
+    if (widget.translations == null) {
+      _translationsContext = null;
+      return buildContent(context);
+    }
+
+    return UpdatTranslationsScope(
+      translations: widget.translations!,
+      child: Builder(
+        builder: (scopedContext) {
+          _translationsContext = scopedContext;
+          return buildContent(scopedContext);
+        },
+      ),
+    );
   }
+
+  BuildContext get _uiContext => _translationsContext ?? context;
 
   void updateValues() {
     setState(() {
@@ -183,7 +209,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
   void openDialog() {
     if (widget.updateDialogBuilder != null) {
       widget.updateDialogBuilder!(
-        context: context,
+        context: _uiContext,
         latestVersion: latestVersion?.toString(),
         status: status,
         changelog: changelog,
@@ -196,7 +222,7 @@ class _UpdatWidgetState extends State<UpdatWidget> {
       );
     } else {
       defaultDialog(
-        context: context,
+        context: _uiContext,
         latestVersion: latestVersion?.toString(),
         status: status,
         changelog: changelog,
