@@ -22,7 +22,7 @@ Future<void> openUri(Uri uri) async {
 
 Future<void> openPath(String url) async {
   if (Platform.isWindows) {
-    await Process.start('start', [url]);
+    await Process.start('cmd', ['/c', 'start', '', url]);
   } else if (Platform.isMacOS) {
     await Process.start('open', [url]);
   } else if (Platform.isLinux) {
@@ -46,7 +46,6 @@ Future<void> openCustom(
     await Process.run(
       customLocation,
       [path],
-      runInShell: true,
     );
   }
 }
