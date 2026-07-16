@@ -412,6 +412,9 @@ class _UpdatWidgetState extends State<UpdatWidget> {
         status != UpdatStatus.dismissed) {
       return;
     }
+    if (installerFile == null) {
+      return;
+    }
     try {
       await openInstaller(installerFile!, widget.appName);
       if (widget.closeOnInstall) exit(0);
