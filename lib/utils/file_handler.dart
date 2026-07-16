@@ -5,14 +5,44 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 
+import 'package:updat/updat_exception.dart';
 import 'package:updat/utils/global_options.dart';
 import 'package:updat/utils/open_link.dart';
+
+bool isZipArchive(String path) => p.extension(path).toLowerCase() == '.zip';
+
+File findInstallerInDirectory(Directory directory) {
+  if (!directory.existsSync()) {
+    throw UpdatException('Installer directory does not exist: ${directory.path}');
+  }
+
+  final files = directory
+      .listSync(recursive: true, followLinks: false)
+      .whereType<File>()
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+
+  if (files.isEmpty) {
+    throw UpdatException('No installer found in ${directory.path}');
+  }
+
+  if (Platform.isWindows) {
+    for (final file in files) {
+      if (p.extension(file.path).toLowerCase() == '.exe') {
+        return file;
+      }
+    }
+    throw UpdatException('No Windows installer (.exe) found in ${directory.path}');
+  }
+
+  return files.first;
+}
 
 Future<File> getDownloadFileLocation(
     String release, String appName, String extension) async {
   final downloadDir = await getDownloadsDirectory();
   if (downloadDir == null) {
-    throw Exception('Unable to get downloads directory');
+    throw UpdatException('Unable to get downloads directory');
   }
   final filePath = p.join(
     downloadDir.absolute.path,
@@ -30,15 +60,14 @@ Future<File> downloadRelease(File file, String url, String appName) async {
   );
   if (res.statusCode == 200) {
     await file.writeAsBytes(res.bodyBytes);
-    if (file.path.endsWith("zip")) {
+    if (isZipArchive(file.path)) {
       final outDir = Directory(p.join(p.dirname(file.path), appName));
       outDir.createSync(recursive: true);
       extractFileToDisk(file.absolute.path, outDir.absolute.path);
     }
-    // Return with new installed status
     return file;
   } else {
-    throw Exception(
+    throw UpdatException(
       'There was an issue downloading the file, please try again later.\n'
       'Code ${res.statusCode}',
     );
@@ -46,23 +75,17 @@ Future<File> downloadRelease(File file, String url, String appName) async {
 }
 
 Future<void> openInstaller(File file, String appName) async {
-  if (file.existsSync()) {
-    if (file.path.endsWith("zip")) {
-      final outDir = Directory(p.join(p.dirname(file.path), appName));
-      file = File(
-          outDir.listSync().firstWhere((e) {
-            if (Platform.isWindows) {
-              return e.path.endsWith("exe");
-            } else {
-              return true;
-            }
-          }).path
-      );
-    }
-    await openUri(Uri(path: file.absolute.path, scheme: 'file'));
-  } else {
-    throw Exception(
-      'Installer does not exists, you have to download it first',
+  if (!file.existsSync()) {
+    throw const UpdatException(
+      'Installer does not exist, you have to download it first',
     );
   }
+
+  var installer = file;
+  if (isZipArchive(file.path)) {
+    final outDir = Directory(p.join(p.dirname(file.path), appName));
+    installer = findInstallerInDirectory(outDir);
+  }
+
+  await openUri(Uri.file(installer.absolute.path));
 }

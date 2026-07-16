@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:updat/updat_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -6,7 +8,7 @@ Future<void> openLink(String url) async {
   if (await canLaunchUrlString(url)) {
     await launchUrlString(url);
   } else {
-    throw "Error";
+    throw UpdatException('Unable to open link: $url');
   }
 }
 
@@ -14,13 +16,13 @@ Future<void> openUri(Uri uri) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri);
   } else {
-    throw "Error";
+    throw UpdatException('Unable to open URI: $uri');
   }
 }
 
 Future<void> openPath(String url) async {
   if (Platform.isWindows) {
-    await Process.start('start', [url]);
+    await Process.start('cmd', ['/c', 'start', '', url]);
   } else if (Platform.isMacOS) {
     await Process.start('open', [url]);
   } else if (Platform.isLinux) {
@@ -32,20 +34,18 @@ Future<void> openCustom(
   String path, {
   String? customLocation,
 }) async {
-  if (customLocation != null) {
-    return await openPath(path);
+  if (customLocation == null) {
+    return openPath(path);
   }
   if (Platform.isMacOS) {
     await Process.run(
-      "open",
-      ['-a $customLocation', path],
-      runInShell: true,
+      'open',
+      ['-a', customLocation, path],
     );
   } else {
     await Process.run(
-      customLocation!,
+      customLocation,
       [path],
-      runInShell: true,
     );
   }
 }

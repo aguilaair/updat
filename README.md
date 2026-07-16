@@ -58,7 +58,7 @@ Want to learn how to integrate Updat in your app?
 | **`currentVersion`**          | `String`                     | **Required**. Must be a semantic version. This is the current package's version.                                     | N/A     |
 | **`getLatestVersion`**        | `Future<String>`             | **Required**. Must be a semantic version. This should request the latest version to the server                       | N/A     |
 | **`getBinaryUrl`**            | `Future<String>`             | **Required**. This should provide the link download the binary for a certain app version. Arguments: `latestVersion` | N/A     |
-| **`appNme`**                  | `String`                     | **Required**. The Application's name. It is used to name the binaries when downloading.                              | N/A     |
+| **`appName`**                 | `String`                     | **Required**. The Application's name. It is used to name the binaries when downloading.                              | N/A     |
 | **`getChangelog`**            | `Future<String>`             | This will render a plain text view of the changelog.                                                                 | N/A     |
 | **`callback`**                | `void Function(UpdatStatus)` | A callback that is called when the UpdatStatus gets updated.                                                         | N/A     |
 | **`controller`**              | `UpdatController`            | Optional controller for programmatic update checks and actions.                                                        | N/A     |
