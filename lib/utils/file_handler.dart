@@ -87,5 +87,5 @@ Future<void> openInstaller(File file, String appName) async {
     installer = findInstallerInDirectory(outDir);
   }
 
-  await openUri(Uri(path: installer.absolute.path, scheme: 'file'));
+  await openUri(Uri.file(installer.absolute.path));
 }
