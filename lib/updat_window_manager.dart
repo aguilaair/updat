@@ -117,6 +117,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
     with WindowListener {
   final shouldRun =
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
+  bool _managedPreventClose = false;
   @override
   void initState() {
     if (shouldRun && widget.handleWindowClose) {
@@ -136,6 +137,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
   }
 
   void _init() async {
+    _managedPreventClose = !(await windowManager.isPreventClose());
     await windowManager.setPreventClose(true);
     setState(() {});
   }
@@ -194,6 +196,7 @@ class _UpdatWindowManagerState extends State<UpdatWindowManager>
       final shouldClose = await widget.onBeforeClose!();
       if (!shouldClose) return;
     } else if (await windowManager.isPreventClose() &&
+        !_managedPreventClose &&
         windowManager.listeners.length > 1) {
       // Another WindowListener (e.g. a close-confirmation dialog) should
       // handle this close attempt.
